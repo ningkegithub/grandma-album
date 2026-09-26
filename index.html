@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<title>外婆的时光相册</title>
+<style>
+:root{--paper:#faf6ee;--ink:#4a3f33;--soft:#8a7a64;--line:#e7dcc6;--red:#b5462f;--gold:#c99b5f;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100vh;min-height:100dvh;}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",serif;
+  background:var(--paper);color:var(--ink);overflow-x:hidden;}
+/* ---------- 封面 ---------- */
+#cover{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 28px calc(40px + env(safe-area-inset-bottom));
+  background:radial-gradient(120% 90% at 50% 0%,#fffdf7 0%,var(--paper) 60%,#f3ead6 100%);}
+#cover .seal{width:74px;height:74px;border:2px solid var(--red);border-radius:12px;display:flex;align-items:center;justify-content:center;
+  color:var(--red);font-size:30px;letter-spacing:2px;margin-bottom:26px;background:#fff;box-shadow:0 8px 24px rgba(181,70,47,.12);}
+#cover h1{font-size:34px;letter-spacing:6px;font-weight:600;margin-bottom:12px;}
+#cover .sub{color:var(--soft);font-size:15px;letter-spacing:2px;margin-bottom:8px;}
+#cover .meta{color:var(--soft);font-size:13px;margin:18px 0 34px;letter-spacing:1px;}
+.btn{display:inline-block;background:var(--red);color:#fff;border:none;border-radius:999px;
+  padding:15px 52px;font-size:16px;letter-spacing:3px;cursor:pointer;box-shadow:0 10px 28px rgba(181,70,47,.3);}
+.btn:active{transform:scale(.97);}
+.credit{margin-top:34px;font-size:11px;color:#b3a68d;letter-spacing:.5px;line-height:1.8;}
+/* ---------- 时间线 ---------- */
+#album{display:none;padding:26px 14px calc(60px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;}
+#album.show{display:block;}
+.year h2{text-align:center;margin:34px 0 16px;font-size:22px;letter-spacing:8px;color:var(--red);font-weight:600;}
+.year h2 span{border-bottom:2px solid var(--gold);padding-bottom:6px;}
+.year:first-child h2{margin-top:8px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 4px 14px rgba(74,63,51,.07);cursor:pointer;}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.card figcaption{font-size:11px;color:var(--soft);text-align:center;padding:7px 4px;line-height:1.6;}
+footer{text-align:center;color:#b3a68d;font-size:12px;padding:30px 20px calc(30px + env(safe-area-inset-bottom));line-height:2;}
+/* ---------- 音乐按钮 ---------- */
+#musicBtn{position:fixed;right:16px;top:calc(16px + env(safe-area-inset-top));z-index:60;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(255,255,255,.92);font-size:20px;display:none;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.12);cursor:pointer;}
+#musicBtn.playing{animation:spin 6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* ---------- 查看器 ---------- */
+#viewer{position:fixed;inset:0;z-index:100;background:rgba(24,18,12,.96);display:none;
+  touch-action:none;overscroll-behavior:contain;}
+#viewer.open{display:block;}
+#stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#stage img{max-width:100vw;max-height:100dvh;object-fit:contain;will-change:transform;user-select:none;-webkit-user-drag:none;}
+#vbar{position:absolute;left:0;right:0;bottom:0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;}
+#vbar .when{font-size:13px;color:#f3d9a8;letter-spacing:1px;margin-bottom:4px;}
+#vbar .what{font-size:16px;font-weight:600;}
+#vbar .count{position:absolute;right:16px;top:14px;font-size:12px;color:#cbb;}
+.vbtn{position:absolute;top:calc(12px + env(safe-area-inset-top));width:42px;height:42px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.4);color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;}
+#vclose{right:12px;}
+#vprev,#vnext{top:50%;transform:translateY(-50%);width:46px;height:46px;}
+#vprev{left:8px;}#vnext{right:8px;}
+#vsave{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom));
+  background:var(--red);color:#fff;border:none;border-radius:999px;padding:12px 34px;font-size:15px;letter-spacing:2px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);cursor:pointer;z-index:5;}
+#toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;
+  padding:10px 20px;border-radius:999px;font-size:13px;display:none;z-index:200;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div id="cover">
+  <div class="seal">外婆</div>
+  <h1>时光相册</h1>
+  <div class="sub">献给我们最爱的外婆 · 黎桂华</div>
+  <div class="meta">2004 — 2025</div>
+  <button class="btn" id="startBtn">打开相册</button>
+  <div class="credit">背景音乐 · Meditation Impromptu 03<br>Kevin MacLeod（incompetech.com）· CC BY 3.0 授权</div>
+</div>
+<button id="musicBtn" title="音乐">🎵</button>
+<main id="album">
+<section class="year"><h2><span>2004</span></h2><div class="grid"><figure class="card" data-i="0"><img loading="lazy" src="thumbs/t001.jpg" alt=""><figcaption>2004年6月26日<br>居庸关长城</figcaption></figure><figure class="card" data-i="1"><img loading="lazy" src="thumbs/t002.jpg" alt=""><figcaption>2004年6月26日<br>八达岭长城</figcaption></figure><figure class="card" data-i="2"><img loading="lazy" src="thumbs/t003.jpg" alt=""><figcaption>2004年6月26日<br>八达岭长城</figcaption></figure><figure class="card" data-i="3"><img loading="lazy" src="thumbs/t004.jpg" alt=""><figcaption>2004年6月26日<br>长城之上</figcaption></figure><figure class="card" data-i="4"><img loading="lazy" src="thumbs/t005.jpg" alt=""><figcaption>2004年6月26日<br>长城之上</figcaption></figure><figure class="card" data-i="5"><img loading="lazy" src="thumbs/t006.jpg" alt=""><figcaption>2004年6月26日<br>古建筑前</figcaption></figure></div></section><section class="year"><h2><span>2007</span></h2><div class="grid"><figure class="card" data-i="6"><img loading="lazy" src="thumbs/t007.jpg" alt=""><figcaption>2007年8月11日<br>爱尔兰 · 戈尔韦海边</figcaption></figure><figure class="card" data-i="7"><img loading="lazy" src="thumbs/t008.jpg" alt=""><figcaption>2007年8月11日<br>戈尔韦</figcaption></figure><figure class="card" data-i="8"><img loading="lazy" src="thumbs/t009.jpg" alt=""><figcaption>2007年8月11日<br>戈尔韦</figcaption></figure><figure class="card" data-i="9"><img loading="lazy" src="thumbs/t010.jpg" alt=""><figcaption>2007年8月11日<br>戈尔韦海边</figcaption></figure><figure class="card" data-i="10"><img loading="lazy" src="thumbs/t011.jpg" alt=""><figcaption>2007年8月11日<br>戈尔韦</figcaption></figure><figure class="card" data-i="11"><img loading="lazy" src="thumbs/t012.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦街头</figcaption></figure><figure class="card" data-i="12"><img loading="lazy" src="thumbs/t013.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦商业街</figcaption></figure><figure class="card" data-i="13"><img loading="lazy" src="thumbs/t014.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="14"><img loading="lazy" src="thumbs/t015.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="15"><img loading="lazy" src="thumbs/t016.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="16"><img loading="lazy" src="thumbs/t017.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="17"><img loading="lazy" src="thumbs/t018.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="18"><img loading="lazy" src="thumbs/t019.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="19"><img loading="lazy" src="thumbs/t020.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="20"><img loading="lazy" src="thumbs/t021.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦广场</figcaption></figure><figure class="card" data-i="21"><img loading="lazy" src="thumbs/t022.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="22"><img loading="lazy" src="thumbs/t023.jpg" alt=""><figcaption>2007年8月13日<br>戈尔韦</figcaption></figure><figure class="card" data-i="23"><img loading="lazy" src="thumbs/t024.jpg" alt=""><figcaption>2007年9月9日<br>聚餐</figcaption></figure><figure class="card" data-i="24"><img loading="lazy" src="thumbs/t025.jpg" alt=""><figcaption>2007年9月25日<br>中秋夜</figcaption></figure><figure class="card" data-i="25"><img loading="lazy" src="thumbs/t026.jpg" alt=""><figcaption>2007年9月25日<br>中秋夜</figcaption></figure><figure class="card" data-i="26"><img loading="lazy" src="thumbs/t027.jpg" alt=""><figcaption>2007年9月25日<br>中秋夜</figcaption></figure><figure class="card" data-i="27"><img loading="lazy" src="thumbs/t028.jpg" alt=""><figcaption>2007年10月11日<br>家中</figcaption></figure></div></section><section class="year"><h2><span>2012</span></h2><div class="grid"><figure class="card" data-i="28"><img loading="lazy" src="thumbs/t029.jpg" alt=""><figcaption>2012年1月22日<br>街边</figcaption></figure><figure class="card" data-i="29"><img loading="lazy" src="thumbs/t030.jpg" alt=""><figcaption>2012年1月23日<br>春节郊游</figcaption></figure><figure class="card" data-i="30"><img loading="lazy" src="thumbs/t031.jpg" alt=""><figcaption>2012年1月23日<br>春节郊游</figcaption></figure><figure class="card" data-i="31"><img loading="lazy" src="thumbs/t032.jpg" alt=""><figcaption>2012年1月23日<br>春节郊游</figcaption></figure><figure class="card" data-i="32"><img loading="lazy" src="thumbs/t033.jpg" alt=""><figcaption>2012年1月23日<br>春节郊游</figcaption></figure><figure class="card" data-i="33"><img loading="lazy" src="thumbs/t034.jpg" alt=""><figcaption>2012年1月24日<br>牌坊前</figcaption></figure><figure class="card" data-i="34"><img loading="lazy" src="thumbs/t035.jpg" alt=""><figcaption>2012年1月24日<br>家中</figcaption></figure><figure class="card" data-i="35"><img loading="lazy" src="thumbs/t036.jpg" alt=""><figcaption>2012年1月29日<br>集市</figcaption></figure><figure class="card" data-i="36"><img loading="lazy" src="thumbs/t037.jpg" alt=""><figcaption>2012年1月29日<br>公园</figcaption></figure><figure class="card" data-i="37"><img loading="lazy" src="thumbs/t038.jpg" alt=""><figcaption>2012年4月4日<br>草坪野餐</figcaption></figure><figure class="card" data-i="38"><img loading="lazy" src="thumbs/t039.jpg" alt=""><figcaption>2012年4月30日<br>草坪野餐</figcaption></figure><figure class="card" data-i="39"><img loading="lazy" src="thumbs/t040.jpg" alt=""><figcaption>2012年5月6日<br>体育场</figcaption></figure><figure class="card" data-i="40"><img loading="lazy" src="thumbs/t041.jpg" alt=""><figcaption>2012年5月12日<br>农家乐</figcaption></figure><figure class="card" data-i="41"><img loading="lazy" src="thumbs/t042.jpg" alt=""><figcaption>2012年7月14日<br>花丛中</figcaption></figure><figure class="card" data-i="42"><img loading="lazy" src="thumbs/t043.jpg" alt=""><figcaption>2012年9月16日<br>水上乐园</figcaption></figure><figure class="card" data-i="43"><img loading="lazy" src="thumbs/t044.jpg" alt=""><figcaption>2012年9月16日<br>摩天轮前</figcaption></figure><figure class="card" data-i="44"><img loading="lazy" src="thumbs/t045.jpg" alt=""><figcaption>2012年9月30日<br>全家福</figcaption></figure><figure class="card" data-i="45"><img loading="lazy" src="thumbs/t046.jpg" alt=""><figcaption>2012年9月30日<br>公园</figcaption></figure><figure class="card" data-i="46"><img loading="lazy" src="thumbs/t047.jpg" alt=""><figcaption>2012年9月30日<br>台阶上</figcaption></figure><figure class="card" data-i="47"><img loading="lazy" src="thumbs/t048.jpg" alt=""><figcaption>2012年10月21日<br>家中</figcaption></figure><figure class="card" data-i="48"><img loading="lazy" src="thumbs/t049.jpg" alt=""><figcaption>2012年10月21日<br>家中</figcaption></figure></div></section><section class="year"><h2><span>2015</span></h2><div class="grid"><figure class="card" data-i="49"><img loading="lazy" src="thumbs/t050.jpg" alt=""><figcaption>2015年2月22日<br>春节 · 公园</figcaption></figure><figure class="card" data-i="50"><img loading="lazy" src="thumbs/t051.jpg" alt=""><figcaption>2015年2月22日<br>春节 · 公园</figcaption></figure><figure class="card" data-i="51"><img loading="lazy" src="thumbs/t052.jpg" alt=""><figcaption>2015年2月22日<br>春节 · 公园</figcaption></figure><figure class="card" data-i="52"><img loading="lazy" src="thumbs/t053.jpg" alt=""><figcaption>2015年2月22日<br>春节 · 公园</figcaption></figure><figure class="card" data-i="53"><img loading="lazy" src="thumbs/t054.jpg" alt=""><figcaption>2015年2月22日<br>竹林栈道</figcaption></figure><figure class="card" data-i="54"><img loading="lazy" src="thumbs/t055.jpg" alt=""><figcaption>2015年2月22日<br>竹林</figcaption></figure><figure class="card" data-i="55"><img loading="lazy" src="thumbs/t056.jpg" alt=""><figcaption>2015年2月22日<br>公园</figcaption></figure><figure class="card" data-i="56"><img loading="lazy" src="thumbs/t057.jpg" alt=""><figcaption>2015年4月25日<br>游乐场</figcaption></figure><figure class="card" data-i="57"><img loading="lazy" src="thumbs/t058.jpg" alt=""><figcaption>2015年4月25日<br>餐厅</figcaption></figure><figure class="card" data-i="58"><img loading="lazy" src="thumbs/t059.jpg" alt=""><figcaption>2015年4月26日<br>茶壶雕塑</figcaption></figure><figure class="card" data-i="59"><img loading="lazy" src="thumbs/t060.jpg" alt=""><figcaption>2015年4月26日<br>大茶壶</figcaption></figure><figure class="card" data-i="60"><img loading="lazy" src="thumbs/t061.jpg" alt=""><figcaption>2015年7月18日<br>江边</figcaption></figure><figure class="card" data-i="61"><img loading="lazy" src="thumbs/t062.jpg" alt=""><figcaption>2015年7月18日<br>江边漫步</figcaption></figure><figure class="card" data-i="62"><img loading="lazy" src="thumbs/t063.jpg" alt=""><figcaption>2015年7月18日<br>江边</figcaption></figure><figure class="card" data-i="63"><img loading="lazy" src="thumbs/t064.jpg" alt=""><figcaption>2015年7月18日<br>江边</figcaption></figure><figure class="card" data-i="64"><img loading="lazy" src="thumbs/t065.jpg" alt=""><figcaption>2015年9月29日<br>街头</figcaption></figure><figure class="card" data-i="65"><img loading="lazy" src="thumbs/t066.jpg" alt=""><figcaption>2015年9月29日<br>街头</figcaption></figure><figure class="card" data-i="66"><img loading="lazy" src="thumbs/t067.jpg" alt=""><figcaption>2015年10月2日<br>生日</figcaption></figure><figure class="card" data-i="67"><img loading="lazy" src="thumbs/t068.jpg" alt=""><figcaption>2015年10月2日<br>生日聚会</figcaption></figure></div></section><section class="year"><h2><span>2016</span></h2><div class="grid"><figure class="card" data-i="68"><img loading="lazy" src="thumbs/t069.jpg" alt=""><figcaption>2016年5月1日<br>草坪野餐</figcaption></figure></div></section><section class="year"><h2><span>2017</span></h2><div class="grid"><figure class="card" data-i="69"><img loading="lazy" src="thumbs/t070.jpg" alt=""><figcaption>2017年4月15日<br>公园</figcaption></figure><figure class="card" data-i="70"><img loading="lazy" src="thumbs/t071.jpg" alt=""><figcaption>2017年4月30日<br>家中</figcaption></figure><figure class="card" data-i="71"><img loading="lazy" src="thumbs/t072.jpg" alt=""><figcaption>2017年7月16日<br>明华轮</figcaption></figure><figure class="card" data-i="72"><img loading="lazy" src="thumbs/t073.jpg" alt=""><figcaption>2017年8月12日<br>广州塔</figcaption></figure><figure class="card" data-i="73"><img loading="lazy" src="thumbs/t074.jpg" alt=""><figcaption>2017年8月12日<br>广州塔</figcaption></figure><figure class="card" data-i="74"><img loading="lazy" src="thumbs/t075.jpg" alt=""><figcaption>2017年8月12日<br>广州塔</figcaption></figure><figure class="card" data-i="75"><img loading="lazy" src="thumbs/t076.jpg" alt=""><figcaption>2017年12月24日<br>平安夜</figcaption></figure><figure class="card" data-i="76"><img loading="lazy" src="thumbs/t077.jpg" alt=""><figcaption>2017年12月24日<br>平安夜</figcaption></figure><figure class="card" data-i="77"><img loading="lazy" src="thumbs/t078.jpg" alt=""><figcaption>2017年12月24日<br>平安夜</figcaption></figure></div></section><section class="year"><h2><span>2019</span></h2><div class="grid"><figure class="card" data-i="78"><img loading="lazy" src="thumbs/t079.jpg" alt=""><figcaption>2019年7月2日<br>餐厅</figcaption></figure><figure class="card" data-i="79"><img loading="lazy" src="thumbs/t080.jpg" alt=""><figcaption>2019年8月17日<br>夜宵</figcaption></figure><figure class="card" data-i="80"><img loading="lazy" src="thumbs/t081.jpg" alt=""><figcaption>2019年9月13日<br>中秋家宴</figcaption></figure></div></section><section class="year"><h2><span>2021</span></h2><div class="grid"><figure class="card" data-i="81"><img loading="lazy" src="thumbs/t082.jpg" alt=""><figcaption>2021年2月14日<br>家中</figcaption></figure><figure class="card" data-i="82"><img loading="lazy" src="thumbs/t083.jpg" alt=""><figcaption>2021年11月13日<br>河边</figcaption></figure></div></section><section class="year"><h2><span>2024</span></h2><div class="grid"><figure class="card" data-i="83"><img loading="lazy" src="thumbs/t084.jpg" alt=""><figcaption>2024年2月10日<br>春节 · 老家</figcaption></figure><figure class="card" data-i="84"><img loading="lazy" src="thumbs/t085.jpg" alt=""><figcaption>2024年2月10日<br>春节 · 老家</figcaption></figure><figure class="card" data-i="85"><img loading="lazy" src="thumbs/t086.jpg" alt=""><figcaption>2024年2月10日<br>春节 · 老家</figcaption></figure><figure class="card" data-i="86"><img loading="lazy" src="thumbs/t087.jpg" alt=""><figcaption>2024年2月10日<br>春节 · 老家</figcaption></figure><figure class="card" data-i="87"><img loading="lazy" src="thumbs/t088.jpg" alt=""><figcaption>2024年2月10日<br>春节 · 老家</figcaption></figure><figure class="card" data-i="88"><img loading="lazy" src="thumbs/t089.jpg" alt=""><figcaption>2024年2月10日<br>春节 · 老家</figcaption></figure><figure class="card" data-i="89"><img loading="lazy" src="thumbs/t090.jpg" alt=""><figcaption>2024年2月10日<br>春节 · 老家</figcaption></figure></div></section><section class="year"><h2><span>2025</span></h2><div class="grid"><figure class="card" data-i="90"><img loading="lazy" src="thumbs/t091.jpg" alt=""><figcaption>2025年4月6日<br>家中</figcaption></figure><figure class="card" data-i="91"><img loading="lazy" src="thumbs/t092.jpg" alt=""><figcaption>2025年4月6日<br>家中</figcaption></figure><figure class="card" data-i="92"><img loading="lazy" src="thumbs/t093.jpg" alt=""><figcaption>2025年4月6日<br>家中</figcaption></figure><figure class="card" data-i="93"><img loading="lazy" src="thumbs/t094.jpg" alt=""><figcaption>2025年4月6日<br>家中</figcaption></figure><figure class="card" data-i="94"><img loading="lazy" src="thumbs/t095.jpg" alt=""><figcaption>2025年10月12日<br>夜市</figcaption></figure><figure class="card" data-i="95"><img loading="lazy" src="thumbs/t096.jpg" alt=""><figcaption>2025年10月19日<br>郊外游玩</figcaption></figure><figure class="card" data-i="96"><img loading="lazy" src="thumbs/t097.jpg" alt=""><figcaption>2025年10月19日<br>郊外游玩</figcaption></figure><figure class="card" data-i="97"><img loading="lazy" src="thumbs/t098.jpg" alt=""><figcaption>2025年10月19日<br>郊外游玩</figcaption></figure><figure class="card" data-i="98"><img loading="lazy" src="thumbs/t099.jpg" alt=""><figcaption>2025年10月19日<br>郊外游玩</figcaption></figure></div></section>
+<footer>愿时光温柔以待<br>把每一个笑容都收好 ❤</footer>
+</main>
+<div id="viewer">
+  <div id="stage"><img id="vimg" alt=""></div>
+  <div id="vbar"><div class="when" id="vwhen"></div><div class="what" id="vwhat"></div><div class="count" id="vcount"></div></div>
+  <button class="vbtn" id="vclose">✕</button>
+  <button class="vbtn" id="vprev">‹</button>
+  <button class="vbtn" id="vnext">›</button>
+  <button id="vsave">保存照片</button>
+</div>
+<div id="toast"></div>
+<audio id="bgm" loop preload="auto" playsinline><source src="music/bgm.mp3" type="audio/mpeg"></audio>
+<script>
+var PHOTOS=[{"src": "photos/p001.jpg", "thumb": "thumbs/t001.jpg", "when": "2004年6月26日", "title": "居庸关长城", "desc": "城楼前，外婆和家人合影"}, {"src": "photos/p002.jpg", "thumb": "thumbs/t002.jpg", "when": "2004年6月26日", "title": "八达岭长城", "desc": "不到长城非好汉石碑前合影"}, {"src": "photos/p003.jpg", "thumb": "thumbs/t003.jpg", "when": "2004年6月26日", "title": "八达岭长城", "desc": "石碑前留影"}, {"src": "photos/p004.jpg", "thumb": "thumbs/t004.jpg", "when": "2004年6月26日", "title": "长城之上", "desc": "城墙上游人如织"}, {"src": "photos/p005.jpg", "thumb": "thumbs/t005.jpg", "when": "2004年6月26日", "title": "长城之上", "desc": "一家人合影"}, {"src": "photos/p006.jpg", "thumb": "thumbs/t006.jpg", "when": "2004年6月26日", "title": "古建筑前", "desc": "全家人在古建筑前合影"}, {"src": "photos/p007.jpg", "thumb": "thumbs/t007.jpg", "when": "2007年8月11日", "title": "爱尔兰 · 戈尔韦海边", "desc": "外婆在礁石堤岸边留影"}, {"src": "photos/p008.jpg", "thumb": "thumbs/t008.jpg", "when": "2007年8月11日", "title": "戈尔韦", "desc": "外婆和红色小汽车合影"}, {"src": "photos/p009.jpg", "thumb": "thumbs/t009.jpg", "when": "2007年8月11日", "title": "戈尔韦", "desc": "三人和红色小汽车合影"}, {"src": "photos/p010.jpg", "thumb": "thumbs/t010.jpg", "when": "2007年8月11日", "title": "戈尔韦海边", "desc": "三人在海滨步道合影"}, {"src": "photos/p011.jpg", "thumb": "thumbs/t011.jpg", "when": "2007年8月11日", "title": "戈尔韦", "desc": "草坡上眺望远处的城市"}, {"src": "photos/p012.jpg", "thumb": "thumbs/t012.jpg", "when": "2007年8月13日", "title": "戈尔韦街头", "desc": "桥边合影"}, {"src": "photos/p013.jpg", "thumb": "thumbs/t013.jpg", "when": "2007年8月13日", "title": "戈尔韦商业街", "desc": "外婆漫步在石板路上"}, {"src": "photos/p014.jpg", "thumb": "thumbs/t014.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "珠宝店门前留影"}, {"src": "photos/p015.jpg", "thumb": "thumbs/t015.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "两人在街头漫步"}, {"src": "photos/p016.jpg", "thumb": "thumbs/t016.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "古老教堂前留影"}, {"src": "photos/p017.jpg", "thumb": "thumbs/t017.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "服装店橱窗前合影"}, {"src": "photos/p018.jpg", "thumb": "thumbs/t018.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "爱尔兰特色纪念品小店前"}, {"src": "photos/p019.jpg", "thumb": "thumbs/t019.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "热闹的街头人群中"}, {"src": "photos/p020.jpg", "thumb": "thumbs/t020.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "两人在广场花坛前"}, {"src": "photos/p021.jpg", "thumb": "thumbs/t021.jpg", "when": "2007年8月13日", "title": "戈尔韦广场", "desc": "喷泉前留影"}, {"src": "photos/p022.jpg", "thumb": "thumbs/t022.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "广场喷泉边小憩"}, {"src": "photos/p023.jpg", "thumb": "thumbs/t023.jpg", "when": "2007年8月13日", "title": "戈尔韦", "desc": "花坛前合影"}, {"src": "photos/p024.jpg", "thumb": "thumbs/t024.jpg", "when": "2007年9月9日", "title": "聚餐", "desc": "大家合影留念"}, {"src": "photos/p025.jpg", "thumb": "thumbs/t025.jpg", "when": "2007年9月25日", "title": "中秋夜", "desc": "海边赏月，一家团圆"}, {"src": "photos/p026.jpg", "thumb": "thumbs/t026.jpg", "when": "2007年9月25日", "title": "中秋夜", "desc": "海边赏月"}, {"src": "photos/p027.jpg", "thumb": "thumbs/t027.jpg", "when": "2007年9月25日", "title": "中秋夜", "desc": "月光下海边合影"}, {"src": "photos/p028.jpg", "thumb": "thumbs/t028.jpg", "when": "2007年10月11日", "title": "家中", "desc": "外婆抱着小宝宝"}, {"src": "photos/p029.jpg", "thumb": "thumbs/t029.jpg", "when": "2012年1月22日", "title": "街边", "desc": "孩子们围坐吃面"}, {"src": "photos/p030.jpg", "thumb": "thumbs/t030.jpg", "when": "2012年1月23日", "title": "春节郊游", "desc": "长台阶上全家合影"}, {"src": "photos/p031.jpg", "thumb": "thumbs/t031.jpg", "when": "2012年1月23日", "title": "春节郊游", "desc": "台阶上全家福"}, {"src": "photos/p032.jpg", "thumb": "thumbs/t032.jpg", "when": "2012年1月23日", "title": "春节郊游", "desc": "抽油机前合影"}, {"src": "photos/p033.jpg", "thumb": "thumbs/t033.jpg", "when": "2012年1月23日", "title": "春节郊游", "desc": "石碑前全家合影"}, {"src": "photos/p034.jpg", "thumb": "thumbs/t034.jpg", "when": "2012年1月24日", "title": "牌坊前", "desc": "全家合影"}, {"src": "photos/p035.jpg", "thumb": "thumbs/t035.jpg", "when": "2012年1月24日", "title": "家中", "desc": "外婆和孩子们在一起"}, {"src": "photos/p036.jpg", "thumb": "thumbs/t036.jpg", "when": "2012年1月29日", "title": "集市", "desc": "热闹的人群里"}, {"src": "photos/p037.jpg", "thumb": "thumbs/t037.jpg", "when": "2012年1月29日", "title": "公园", "desc": "孩子们围看金鱼"}, {"src": "photos/p038.jpg", "thumb": "thumbs/t038.jpg", "when": "2012年4月4日", "title": "草坪野餐", "desc": "一家人席地而坐"}, {"src": "photos/p039.jpg", "thumb": "thumbs/t039.jpg", "when": "2012年4月30日", "title": "草坪野餐", "desc": "午后小憩"}, {"src": "photos/p040.jpg", "thumb": "thumbs/t040.jpg", "when": "2012年5月6日", "title": "体育场", "desc": "跑道上玩耍"}, {"src": "photos/p041.jpg", "thumb": "thumbs/t041.jpg", "when": "2012年5月12日", "title": "农家乐", "desc": "一大家子聚餐"}, {"src": "photos/p042.jpg", "thumb": "thumbs/t042.jpg", "when": "2012年7月14日", "title": "花丛中", "desc": "外婆抱着孩子"}, {"src": "photos/p043.jpg", "thumb": "thumbs/t043.jpg", "when": "2012年9月16日", "title": "水上乐园", "desc": "孩子们戏水"}, {"src": "photos/p044.jpg", "thumb": "thumbs/t044.jpg", "when": "2012年9月16日", "title": "摩天轮前", "desc": "合影"}, {"src": "photos/p045.jpg", "thumb": "thumbs/t045.jpg", "when": "2012年9月30日", "title": "全家福", "desc": "一家人其乐融融"}, {"src": "photos/p046.jpg", "thumb": "thumbs/t046.jpg", "when": "2012年9月30日", "title": "公园", "desc": "大象雕塑前"}, {"src": "photos/p047.jpg", "thumb": "thumbs/t047.jpg", "when": "2012年9月30日", "title": "台阶上", "desc": "外婆抱着孩子"}, {"src": "photos/p048.jpg", "thumb": "thumbs/t048.jpg", "when": "2012年10月21日", "title": "家中", "desc": "沙发上其乐融融"}, {"src": "photos/p049.jpg", "thumb": "thumbs/t049.jpg", "when": "2012年10月21日", "title": "家中", "desc": "沙发自拍"}, {"src": "photos/p050.jpg", "thumb": "thumbs/t050.jpg", "when": "2015年2月22日", "title": "春节 · 公园", "desc": "推着婴儿车散步"}, {"src": "photos/p051.jpg", "thumb": "thumbs/t051.jpg", "when": "2015年2月22日", "title": "春节 · 公园", "desc": "婴儿车旁"}, {"src": "photos/p052.jpg", "thumb": "thumbs/t052.jpg", "when": "2015年2月22日", "title": "春节 · 公园", "desc": "全家推车漫步"}, {"src": "photos/p053.jpg", "thumb": "thumbs/t053.jpg", "when": "2015年2月22日", "title": "春节 · 公园", "desc": "合影"}, {"src": "photos/p054.jpg", "thumb": "thumbs/t054.jpg", "when": "2015年2月22日", "title": "竹林栈道", "desc": "外婆抱着小宝宝"}, {"src": "photos/p055.jpg", "thumb": "thumbs/t055.jpg", "when": "2015年2月22日", "title": "竹林", "desc": "全家合影"}, {"src": "photos/p056.jpg", "thumb": "thumbs/t056.jpg", "when": "2015年2月22日", "title": "公园", "desc": "竹林边休息合影"}, {"src": "photos/p057.jpg", "thumb": "thumbs/t057.jpg", "when": "2015年4月25日", "title": "游乐场", "desc": "孩子们的乐园"}, {"src": "photos/p058.jpg", "thumb": "thumbs/t058.jpg", "when": "2015年4月25日", "title": "餐厅", "desc": "一家人吃饭"}, {"src": "photos/p059.jpg", "thumb": "thumbs/t059.jpg", "when": "2015年4月26日", "title": "茶壶雕塑", "desc": "孩子爬上大茶壶"}, {"src": "photos/p060.jpg", "thumb": "thumbs/t060.jpg", "when": "2015年4月26日", "title": "大茶壶", "desc": "外婆在茶壶上留影"}, {"src": "photos/p061.jpg", "thumb": "thumbs/t061.jpg", "when": "2015年7月18日", "title": "江边", "desc": "外婆、外公抱着孩子"}, {"src": "photos/p062.jpg", "thumb": "thumbs/t062.jpg", "when": "2015年7月18日", "title": "江边漫步", "desc": "晚霞中的一家人"}, {"src": "photos/p063.jpg", "thumb": "thumbs/t063.jpg", "when": "2015年7月18日", "title": "江边", "desc": "散步"}, {"src": "photos/p064.jpg", "thumb": "thumbs/t064.jpg", "when": "2015年7月18日", "title": "江边", "desc": "合影"}, {"src": "photos/p065.jpg", "thumb": "thumbs/t065.jpg", "when": "2015年9月29日", "title": "街头", "desc": "粉色遮阳棚电动车"}, {"src": "photos/p066.jpg", "thumb": "thumbs/t066.jpg", "when": "2015年9月29日", "title": "街头", "desc": "电动车上合影"}, {"src": "photos/p067.jpg", "thumb": "thumbs/t067.jpg", "when": "2015年10月2日", "title": "生日", "desc": "吹蜡烛许愿"}, {"src": "photos/p068.jpg", "thumb": "thumbs/t068.jpg", "when": "2015年10月2日", "title": "生日聚会", "desc": "一家人围坐"}, {"src": "photos/p069.jpg", "thumb": "thumbs/t069.jpg", "when": "2016年5月1日", "title": "草坪野餐", "desc": "帐篷边的午后"}, {"src": "photos/p070.jpg", "thumb": "thumbs/t070.jpg", "when": "2017年4月15日", "title": "公园", "desc": "游览"}, {"src": "photos/p071.jpg", "thumb": "thumbs/t071.jpg", "when": "2017年4月30日", "title": "家中", "desc": "其乐融融"}, {"src": "photos/p072.jpg", "thumb": "thumbs/t072.jpg", "when": "2017年7月16日", "title": "明华轮", "desc": "大邮轮前合影留念"}, {"src": "photos/p073.jpg", "thumb": "thumbs/t073.jpg", "when": "2017年8月12日", "title": "广州塔", "desc": "夜色下的全家福"}, {"src": "photos/p074.jpg", "thumb": "thumbs/t074.jpg", "when": "2017年8月12日", "title": "广州塔", "desc": "夜景合影"}, {"src": "photos/p075.jpg", "thumb": "thumbs/t075.jpg", "when": "2017年8月12日", "title": "广州塔", "desc": "灯光璀璨"}, {"src": "photos/p076.jpg", "thumb": "thumbs/t076.jpg", "when": "2017年12月24日", "title": "平安夜", "desc": "家中圣诞树前"}, {"src": "photos/p077.jpg", "thumb": "thumbs/t077.jpg", "when": "2017年12月24日", "title": "平安夜", "desc": "圣诞树下全家福"}, {"src": "photos/p078.jpg", "thumb": "thumbs/t078.jpg", "when": "2017年12月24日", "title": "平安夜", "desc": "其乐融融"}, {"src": "photos/p079.jpg", "thumb": "thumbs/t079.jpg", "when": "2019年7月2日", "title": "餐厅", "desc": "聚餐"}, {"src": "photos/p080.jpg", "thumb": "thumbs/t080.jpg", "when": "2019年8月17日", "title": "夜宵", "desc": "户外用餐"}, {"src": "photos/p081.jpg", "thumb": "thumbs/t081.jpg", "when": "2019年9月13日", "title": "中秋家宴", "desc": "团圆饭"}, {"src": "photos/p082.jpg", "thumb": "thumbs/t082.jpg", "when": "2021年2月14日", "title": "家中", "desc": "一展歌喉"}, {"src": "photos/p083.jpg", "thumb": "thumbs/t083.jpg", "when": "2021年11月13日", "title": "河边", "desc": "晚霞中聊天"}, {"src": "photos/p084.jpg", "thumb": "thumbs/t084.jpg", "when": "2024年2月10日", "title": "春节 · 老家", "desc": "门前合影"}, {"src": "photos/p085.jpg", "thumb": "thumbs/t085.jpg", "when": "2024年2月10日", "title": "春节 · 老家", "desc": "门前全家福"}, {"src": "photos/p086.jpg", "thumb": "thumbs/t086.jpg", "when": "2024年2月10日", "title": "春节 · 老家", "desc": "小楼前大合影"}, {"src": "photos/p087.jpg", "thumb": "thumbs/t087.jpg", "when": "2024年2月10日", "title": "春节 · 老家", "desc": "门前合影"}, {"src": "photos/p088.jpg", "thumb": "thumbs/t088.jpg", "when": "2024年2月10日", "title": "春节 · 老家", "desc": "外公外婆门前合影"}, {"src": "photos/p089.jpg", "thumb": "thumbs/t089.jpg", "when": "2024年2月10日", "title": "春节 · 老家", "desc": "外婆和外公"}, {"src": "photos/p090.jpg", "thumb": "thumbs/t090.jpg", "when": "2024年2月10日", "title": "春节 · 老家", "desc": "小楼前留影"}, {"src": "photos/p091.jpg", "thumb": "thumbs/t091.jpg", "when": "2025年4月6日", "title": "家中", "desc": "圣诞树前合影"}, {"src": "photos/p092.jpg", "thumb": "thumbs/t092.jpg", "when": "2025年4月6日", "title": "家中", "desc": "外婆和多肉植物"}, {"src": "photos/p093.jpg", "thumb": "thumbs/t093.jpg", "when": "2025年4月6日", "title": "家中", "desc": "福字前留影"}, {"src": "photos/p094.jpg", "thumb": "thumbs/t094.jpg", "when": "2025年4月6日", "title": "家中", "desc": "外婆给孩子梳头"}, {"src": "photos/p095.jpg", "thumb": "thumbs/t095.jpg", "when": "2025年10月12日", "title": "夜市", "desc": "聚餐"}, {"src": "photos/p096.jpg", "thumb": "thumbs/t096.jpg", "when": "2025年10月19日", "title": "郊外游玩", "desc": "绿草土丘前三人合影"}, {"src": "photos/p097.jpg", "thumb": "thumbs/t097.jpg", "when": "2025年10月19日", "title": "郊外游玩", "desc": "绿草土丘前全家合影"}, {"src": "photos/p098.jpg", "thumb": "thumbs/t098.jpg", "when": "2025年10月19日", "title": "郊外游玩", "desc": "绿草土丘前全家福"}, {"src": "photos/p099.jpg", "thumb": "thumbs/t099.jpg", "when": "2025年10月19日", "title": "郊外游玩", "desc": "开心自拍"}];
+var vi=0,viewer=document.getElementById('viewer'),vimg=document.getElementById('vimg'),
+    stage=document.getElementById('stage');
+var scale=1,tx=0,ty=0,lastTap=0;
+function apply(){vimg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';}
+function clamp(){
+  var r=vimg.getBoundingClientRect();
+  var overX=Math.max(0,(r.width-stage.clientWidth)/2),overY=Math.max(0,(r.height-stage.clientHeight)/2);
+  tx=Math.max(-overX,Math.min(overX,tx));ty=Math.max(-overY,Math.min(overY,ty));apply();
+}
+function show(i){
+  vi=(i+PHOTOS.length)%PHOTOS.length;
+  var p=PHOTOS[vi];
+  scale=1;tx=0;ty=0;apply();
+  vimg.src=p.src;
+  document.getElementById('vwhen').textContent=p.when+' · '+p.title;
+  document.getElementById('vwhat').textContent=p.desc;
+  document.getElementById('vcount').textContent=(vi+1)+' / '+PHOTOS.length;
+}
+function openViewer(i){show(i);viewer.classList.add('open');document.body.style.overflow='hidden';}
+function closeViewer(){viewer.classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.card').forEach(function(c){
+  c.addEventListener('click',function(){openViewer(parseInt(c.dataset.i,10));});
+});
+document.getElementById('vclose').onclick=closeViewer;
+document.getElementById('vprev').onclick=function(e){e.stopPropagation();show(vi-1);};
+document.getElementById('vnext').onclick=function(e){e.stopPropagation();show(vi+1);};
+document.addEventListener('keydown',function(e){
+  if(!viewer.classList.contains('open'))return;
+  if(e.key==='Escape')closeViewer();
+  if(e.key==='ArrowLeft')show(vi-1);
+  if(e.key==='ArrowRight')show(vi+1);
+});
+/* 手势:单指拖动/滑动,双指缩放,双击放大 */
+var pts=new Map(),pinchD0=0,scale0=1,swipeX=null,movedFar=false;
+stage.addEventListener('pointerdown',function(e){
+  stage.setPointerCapture(e.pointerId);
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===1){swipeX=e.clientX;movedFar=false;}
+  if(pts.size===2){var a=[...pts.values()];pinchD0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);scale0=scale;}
+});
+stage.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  var prev=pts.get(e.pointerId);
+  var dx=e.clientX-prev.x,dy=e.clientY-prev.y;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===2){
+    var a=[...pts.values()];
+    var d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+    if(pinchD0>0){scale=Math.max(1,Math.min(5,scale0*d/pinchD0));clamp();}
+    movedFar=true;
+  }else if(pts.size===1){
+    if(Math.abs(e.clientX-swipeX)>12)movedFar=true;
+    if(scale>1){tx+=dx;ty+=dy;clamp();}
+  }
+});
+function endPointer(e){
+  pts.delete(e.pointerId);
+  if(pts.size===0){
+    var now=Date.now();
+    if(!movedFar){
+      if(now-lastTap<320){ /* 双击 */
+        scale=scale>1?1:2.5;tx=0;ty=0;apply();
+      }
+      lastTap=now;
+    }else if(scale===1&&swipeX!==null){
+      var dx=e.clientX-swipeX;
+      if(Math.abs(dx)>60)show(vi+(dx<0?1:-1));
+    }
+    swipeX=null;
+  }
+}
+stage.addEventListener('pointerup',endPointer);
+stage.addEventListener('pointercancel',endPointer);
+/* 保存照片 */
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
+  setTimeout(function(){t.style.display='none';},2600);}
+document.getElementById('vsave').addEventListener('click',function(e){
+  e.stopPropagation();
+  var p=PHOTOS[vi],a=document.createElement('a');
+  a.href=p.src;a.download='外婆的时光相册-'+(vi+1)+'.jpg';
+  document.body.appendChild(a);a.click();a.remove();
+  toast('已开始下载，长按图片也可保存到相册');
+});
+/* ---------- 背景音乐 ---------- */
+(function(){
+  var audio=document.getElementById('bgm'),btn=document.getElementById('musicBtn'),
+      started=false,userPaused=false;
+  audio.volume=0.7;
+  audio.addEventListener('canplay',function(){btn.style.display='flex';});
+  var src=audio.querySelector('source');
+  src.addEventListener('error',function(){btn.style.display='none';});
+  audio.addEventListener('play',function(){btn.classList.add('playing');btn.textContent='🎵';});
+  audio.addEventListener('pause',function(){btn.classList.remove('playing');btn.textContent='🔇';});
+  function tryPlay(){
+    if(!started||userPaused||!audio.paused)return;
+    var pr=audio.play();if(pr&&pr.catch)pr.catch(function(){});
+  }
+  btn.addEventListener('click',function(e){e.stopPropagation();
+    if(audio.paused){userPaused=false;var pr=audio.play();if(pr&&pr.catch)pr.catch(function(){});}
+    else{userPaused=true;audio.pause();}});
+  document.getElementById('startBtn').addEventListener('click',function(){
+    document.getElementById('cover').style.display='none';
+    document.getElementById('album').classList.add('show');
+    window.scrollTo(0,0);
+    if(!started){started=true;userPaused=false;audio.load();tryPlay();}
+  });
+  ['touchend','pointerdown'].forEach(function(ev){
+    document.addEventListener(ev,function(){tryPlay();},{passive:true});
+  });
+  document.addEventListener('WeixinJSBridgeReady',function(){tryPlay();});
+})();
+</script>
+</body>
+</html>
