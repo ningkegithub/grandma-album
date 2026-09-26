@@ -166,9 +166,9 @@ stage.addEventListener('pointercancel',endPointer);
 /* 保存照片 */
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
   setTimeout(function(){t.style.display='none';},2600);}
-document.getElementById('vsave').addEventListener('click',function(e){
-  e.stopPropagation();
-  var p=PHOTOS[vi],btn=this,fname='外婆的时光相册-'+(vi+1)+'.jpg';
+/* 保存照片：微信内调原生看图（长按即可保存到系统相册），其他浏览器走下载 */
+function absUrl(rel){try{return new URL(rel,location.href).href;}catch(e){return rel;}}
+function blobDownload(p,fname,btn){
   function direct(){var a=document.createElement('a');
     a.href=p.src;a.download=fname;
     document.body.appendChild(a);a.click();a.remove();
@@ -182,6 +182,21 @@ document.getElementById('vsave').addEventListener('click',function(e){
     setTimeout(function(){URL.revokeObjectURL(url);},5000);
     toast('照片已保存，长按图片也可存到相册');
   }).catch(function(){direct();}).then(function(){btn.disabled=false;});
+}
+document.getElementById('vsave').addEventListener('click',function(e){
+  e.stopPropagation();
+  var p=PHOTOS[vi],btn=this,fname='外婆的时光相册-'+(vi+1)+'.jpg';
+  if(/MicroMessenger/i.test(navigator.userAgent)){
+    var urls=PHOTOS.map(function(q){return absUrl(q.src);});
+    var st={done:false};
+    function openPrev(){if(st.done)return;st.done=true;
+      WeixinJSBridge.invoke('imagePreview',{current:urls[vi],urls:urls});}
+    if(window.WeixinJSBridge){openPrev();}
+    else{document.addEventListener('WeixinJSBridgeReady',openPrev);
+      setTimeout(function(){if(!st.done){st.done=true;blobDownload(p,fname,btn);}},1500);}
+  }else{
+    blobDownload(p,fname,btn);
+  }
 });
 /* ---------- 背景音乐 ---------- */
 (function(){
