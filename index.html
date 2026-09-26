@@ -168,10 +168,20 @@ function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.s
   setTimeout(function(){t.style.display='none';},2600);}
 document.getElementById('vsave').addEventListener('click',function(e){
   e.stopPropagation();
-  var p=PHOTOS[vi],a=document.createElement('a');
-  a.href=p.src;a.download='外婆的时光相册-'+(vi+1)+'.jpg';
-  document.body.appendChild(a);a.click();a.remove();
-  toast('已开始下载，长按图片也可保存到相册');
+  var p=PHOTOS[vi],btn=this,fname='外婆的时光相册-'+(vi+1)+'.jpg';
+  function direct(){var a=document.createElement('a');
+    a.href=p.src;a.download=fname;
+    document.body.appendChild(a);a.click();a.remove();
+    toast('已开始下载，长按图片也可保存到相册');}
+  if(btn.disabled)return;btn.disabled=true;
+  toast('正在准备照片…');
+  fetch(p.src).then(function(r){if(!r.ok)throw new Error('fetch');return r.blob();}).then(function(b){
+    var url=URL.createObjectURL(b),a=document.createElement('a');
+    a.href=url;a.download=fname;
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},5000);
+    toast('照片已保存，长按图片也可存到相册');
+  }).catch(function(){direct();}).then(function(){btn.disabled=false;});
 });
 /* ---------- 背景音乐 ---------- */
 (function(){
