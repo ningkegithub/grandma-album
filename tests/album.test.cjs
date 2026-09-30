@@ -38,3 +38,9 @@ ids.stage.setPointerCapture=()=>{};ids.stage.clientWidth=300;ids.stage.clientHei
 run('showPhoto(0)');ids.stage.dispatch('pointerdown',pointer);ids.stage.dispatch('pointermove',{...pointer,clientX:100});ids.stage.dispatch('pointerup',{...pointer,clientX:100});assert.equal(ids.vcount.textContent,'2 / 836');
 ids.stage.dispatch('pointerdown',pointer);ids.stage.dispatch('pointercancel',pointer);assert.equal(run('points.size'),0);assert.equal(ids.viewer.classList.contains('hideui'),false);
 ids.stage.dispatch('pointerdown',pointer);ids.stage.dispatch('pointerup',pointer);ids.stage.dispatch('pointerdown',pointer);ids.stage.dispatch('pointerup',pointer);assert.equal(run('scale'),2.5);run('showPhoto(0)');assert.equal(run('scale'),1);console.log('PASS:original swipe, double-tap zoom, reset and pointer cancellation; saving has no gesture interception.');
+
+const saveRule=css.match(/#saveImage\{([^}]+)\}/)[1];
+for(const rule of ['width:auto','height:auto','max-width:100%','max-height:100%','flex:none','transform:none','transition:none','animation:none','-webkit-touch-callout:default'])assert.ok(saveRule.includes(rule),rule);
+assert.ok(!/(?:^|;)width:100%/.test(saveRule));assert.ok(!/(?:^|;)height:100%/.test(saveRule));assert.ok(!saveRule.includes('object-fit:contain'));
+assert.ok(!/\$\('saveImage'\)\.addEventListener\('(?:pointer|touch|contextmenu)/.test(script));
+console.log('PASS:save-image intrinsic-ratio CSS; bounded dimensions; no flex distortion/transform/animation; native long-press untouched.');
