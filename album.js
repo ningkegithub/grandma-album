@@ -3,7 +3,7 @@
 const dateKey = p => { const m=p.when.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日$/); return m?Number(m[1])*10000+Number(m[2])*100+Number(m[3]):Infinity; };
 const photos=PHOTOS.map((p,order)=>({...p,order})).sort((a,b)=>dateKey(a)-dateKey(b)||a.order-b.order);
 const $=id=>document.getElementById(id);
-const viewer=$('viewer'), image=$('vimg'), audio=$('bgm'), saveViewer=$('saveViewer');
+const viewer=$('viewer'), image=$('vimg'), audio=$('bgm');
 let current=0,rendered=false,returnFocus=null,imageRequest=0,returnScroll=0;
 const yearSections=[],yearFirstPhoto=new Map();
 const photoYear=p=>(p.when.match(/^\d{4}/)||['日期待确认'])[0];
@@ -30,7 +30,7 @@ function startAlbum(focus=true){renderAlbum();$('cover').hidden=true;$('album').
 function showPhoto(index){
   current=Math.max(0,Math.min(photos.length-1,index));const p=photos[current];
   $('viewerYearSelect').value=photoYear(p);$('vwhen').textContent=p.when;$('vtitle').textContent=p.title;$('vdesc').textContent=p.desc;$('vcount').textContent=`${current+1} / ${photos.length}`;
-  $('vprev').disabled=current===0;$('vnext').disabled=current===photos.length-1;resetImageTransform();viewer.classList.remove('hideui');
+  $('vprev').disabled=current===0;$('vnext').disabled=current===photos.length-1;resetInteraction();setSaveHelp(false);setCaptionVisible(true);
   loadImage(p);
 }
 function loadImage(p){
@@ -49,27 +49,61 @@ let scrollFrame=0;window.addEventListener('scroll',()=>{if(scrollFrame)return;sc
 window.addEventListener('resize',syncVisibleYear);
 $('viewerYearSelect').addEventListener('change',()=>{const index=yearFirstPhoto.get($('viewerYearSelect').value);if(index!==undefined)showPhoto(index);});
 $('yearSelect').addEventListener('change',()=>{const section=$('year-'+$('yearSelect').value);if(!section)return;section.scrollIntoView();section.querySelector('h2').focus({preventScroll:true});});
-$('vclose').addEventListener('click',()=>viewer.close());viewer.addEventListener('close',()=>{resetImageTransform();document.body.style.overflow='';if(returnFocus){returnFocus.focus({preventScroll:true});window.scrollTo(0,returnScroll);syncVisibleYear();}});
+$('vclose').addEventListener('click',()=>viewer.close());viewer.addEventListener('close',()=>{resetInteraction();document.body.style.overflow='';if(returnFocus){returnFocus.focus({preventScroll:true});window.scrollTo(0,returnScroll);syncVisibleYear();}});
 $('vprev').addEventListener('click',()=>showPhoto(current-1));$('vnext').addEventListener('click',()=>showPhoto(current+1));
-viewer.addEventListener('keydown',event=>{if(event.target=== $('viewerYearSelect'))return;if(!saveViewer.open&&(event.key==='ArrowLeft'||event.key==='ArrowRight')){event.preventDefault();showPhoto(current+(event.key==='ArrowRight'?1:-1));}});
+viewer.addEventListener('keydown',event=>{if(event.target=== $('viewerYearSelect'))return;if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();showPhoto(current+(event.key==='ArrowRight'?1:-1));}});
 $('retryImage').addEventListener('click',()=>loadImage(photos[current]));
-// Stay inside this page. WeChat may turn a download link into an unusable file preview.
-// A real, unwrapped original image preserves the native long-press/right-click menu.
-$('savePhoto').addEventListener('click',()=>{const p=photos[current],img=$('saveImage');img.hidden=false;$('saveImageStatus').hidden=true;img.alt=p.title+'。'+p.desc;img.src=p.src;saveViewer.showModal();$('closeSave').focus();});
-$('saveImage').addEventListener('error',()=>{$('saveImage').hidden=true;$('saveImageStatus').hidden=false;});
-$('closeSave').addEventListener('click',()=>saveViewer.close());saveViewer.addEventListener('close',()=>{$('savePhoto').focus();});
+// The viewer already contains the full original. Show help in the same reserved
+// caption slot instead of opening a second screen or initiating a download.
+function updateCaptionAccess(){
+  const helping=viewer.classList.contains('show-save-help');
+  $('captionCopy').setAttribute('aria-hidden',String(helping||viewer.classList.contains('hideui')));
+  $('saveHelp').setAttribute('aria-hidden',String(!helping));
+}
+function setCaptionVisible(visible){viewer.classList.toggle('hideui',!visible);updateCaptionAccess();}
+function setSaveHelp(show){viewer.classList.toggle('show-save-help',show);$('savePhoto').textContent=show?'知道了':'保存';$('savePhoto').setAttribute('aria-expanded',String(show));if(!show)viewer.classList.remove('hideui');updateCaptionAccess();}
+$('savePhoto').addEventListener('click',()=>setSaveHelp(!viewer.classList.contains('show-save-help')));
 function syncMusic(){const playing=!audio.paused;$('musicBtn').textContent=playing?'♫':'♪';$('musicBtn').title=playing?'关闭背景音乐':'播放背景音乐';$('musicBtn').setAttribute('aria-pressed',String(playing));$('musicBtn').setAttribute('aria-label',playing?'关闭背景音乐':'播放背景音乐');}
 $('musicBtn').addEventListener('click',async()=>{if(!audio.paused){audio.pause();return;}try{await audio.play();$('musicStatus').textContent='';}catch(_){$('musicStatus').textContent='音乐暂时无法播放，可以继续看照片。';syncMusic();}});
 audio.volume=.5;audio.addEventListener('play',syncMusic);audio.addEventListener('pause',syncMusic);audio.addEventListener('error',()=>{$('musicStatus').textContent='音乐暂时无法播放，可以继续看照片。';syncMusic();});
 $('photoTotal').textContent=photos.length+' 张照片';
 
-let scale=1,tx=0,ty=0,lastTap=0,tapTimer=null;
-const stage=$('stage'),points=new Map();let pinchDistance=0,pinchScale=1,swipeX=null,moved=false;
-function applyImageTransform(){image.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';}
-function resetImageTransform(){scale=1;tx=0;ty=0;points.clear();swipeX=null;if(tapTimer){clearTimeout(tapTimer);tapTimer=null;}applyImageTransform();}
-function clampImage(){const r=image.getBoundingClientRect(),x=Math.max(0,(r.width-stage.clientWidth)/2),y=Math.max(0,(r.height-stage.clientHeight)/2);tx=Math.max(-x,Math.min(x,tx));ty=Math.max(-y,Math.min(y,ty));applyImageTransform();}
-stage.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;stage.setPointerCapture(e.pointerId);points.set(e.pointerId,{x:e.clientX,y:e.clientY});if(points.size===1){swipeX=e.clientX;moved=false;}if(points.size===2){const a=[...points.values()];pinchDistance=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);pinchScale=scale;}});
-stage.addEventListener('pointermove',e=>{if(!points.has(e.pointerId))return;const previous=points.get(e.pointerId),dx=e.clientX-previous.x,dy=e.clientY-previous.y;points.set(e.pointerId,{x:e.clientX,y:e.clientY});if(points.size===2){const a=[...points.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinchDistance>0){scale=Math.max(1,Math.min(5,pinchScale*d/pinchDistance));clampImage();}moved=true;}else if(points.size===1){if(Math.abs(e.clientX-swipeX)>12||Math.abs(dy)>12)moved=true;if(scale>1){tx+=dx;ty+=dy;clampImage();}}});
-stage.addEventListener('pointerup',e=>{if(!points.has(e.pointerId))return;points.delete(e.pointerId);if(points.size)return;const now=Date.now();if(!moved){if(now-lastTap<320){if(tapTimer){clearTimeout(tapTimer);tapTimer=null;}scale=scale>1?1:2.5;tx=0;ty=0;applyImageTransform();}else{if(tapTimer)clearTimeout(tapTimer);tapTimer=setTimeout(()=>{tapTimer=null;viewer.classList.toggle('hideui');},330);}lastTap=now;}else if(scale===1&&swipeX!==null){const dx=e.clientX-swipeX;if(Math.abs(dx)>60)showPhoto(current+(dx<0?1:-1));}swipeX=null;});
-stage.addEventListener('pointercancel',e=>{points.delete(e.pointerId);if(!points.size)swipeX=null;});
-
+// Track only genuine short taps and clear horizontal swipes. Stationary long
+// presses, native context menus, vertical movement and pinch belong to the browser.
+const stage=$('stage'),points=new Map();
+const PRESS_LIMIT_MS=450,MOVE_SLOP=12,SWIPE_DISTANCE=60;
+let gestureMode='idle',hadMultiple=false,ignoreClickUntil=0,ignoreNextClick=false;
+function releaseCaptures(){for(const id of points.keys()){if(stage.hasPointerCapture&&stage.hasPointerCapture(id))stage.releasePointerCapture(id);}}
+function resetInteraction(){releaseCaptures();points.clear();gestureMode='idle';hadMultiple=false;}
+function suppressFollowingClick(){ignoreClickUntil=Date.now()+1200;ignoreNextClick=true;}
+function finishNativeGesture(){suppressFollowingClick();resetInteraction();}
+stage.addEventListener('pointerdown',e=>{
+  if(e.target.closest('button'))return;
+  if(points.size===0){gestureMode='pending';hadMultiple=false;ignoreNextClick=false;}
+  points.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,started:Date.now(),distance:0});
+  if(points.size>1){hadMultiple=true;gestureMode='native';releaseCaptures();}
+});
+stage.addEventListener('pointermove',e=>{
+  const p=points.get(e.pointerId);if(!p)return;
+  p.x=e.clientX;p.y=e.clientY;const dx=p.x-p.startX,dy=p.y-p.startY;p.distance=Math.max(p.distance,Math.hypot(dx,dy));
+  if(hadMultiple||gestureMode==='native')return;
+  if(gestureMode==='pending'&&Date.now()-p.started>=PRESS_LIMIT_MS){gestureMode='native';suppressFollowingClick();return;}
+  if(Math.abs(dy)>MOVE_SLOP&&Math.abs(dy)>=Math.abs(dx)){gestureMode='native';releaseCaptures();return;}
+  if(gestureMode==='pending'&&Math.abs(dx)>MOVE_SLOP&&Math.abs(dx)>Math.abs(dy)*1.25){gestureMode='swipe';stage.setPointerCapture(e.pointerId);}
+});
+stage.addEventListener('pointerup',e=>{
+  const p=points.get(e.pointerId);if(!p)return;
+  const elapsed=Date.now()-p.started,dx=e.clientX-p.startX,dy=e.clientY-p.startY;
+  p.distance=Math.max(p.distance,Math.hypot(dx,dy));
+  const mode=gestureMode,multiple=hadMultiple;releaseCaptures();points.delete(e.pointerId);
+  if(points.size)return;
+  gestureMode='idle';hadMultiple=false;
+  if(multiple||mode==='native'){suppressFollowingClick();return;}
+  if(mode==='swipe'){suppressFollowingClick();if(Math.abs(dx)>SWIPE_DISTANCE)showPhoto(current+(dx<0?1:-1));return;}
+  if(elapsed>=PRESS_LIMIT_MS||p.distance>MOVE_SLOP){suppressFollowingClick();return;}
+  if(viewer.classList.contains('show-save-help'))setSaveHelp(false);
+  else setCaptionVisible(viewer.classList.contains('hideui'));
+});
+stage.addEventListener('pointercancel',finishNativeGesture);
+stage.addEventListener('contextmenu',finishNativeGesture); // Deliberately no preventDefault.
+stage.addEventListener('click',e=>{if(ignoreNextClick||Date.now()<ignoreClickUntil){ignoreNextClick=false;e.stopImmediatePropagation();}});

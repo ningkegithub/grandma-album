@@ -6,7 +6,7 @@ A static family photo album. No build step or third-party script dependencies.
 
 The owner's chosen visual baseline is original commit `e81aa936dc4bb08edc306bdb3766bcad436dd9f1`: the warm-paper seal cover, three-column square thumbnail overview with compact date/title captions, and pure dark full-screen photo viewer. Do not substitute single-column cards, an editorial cover, or large viewer panels. Thumbnail density and the original photo-viewing experience are intentional.
 
-The original optional swipe, pinch, double-tap zoom, and tap-to-hide-caption gestures are retained. Close, previous/next and the compact year control remain visible. Semantic controls and keyboard focus management are maintained.
+Short taps toggle caption visibility without resizing the photo; a clear horizontal swipe can change photos. Stationary long presses, vertical movement and pinch zoom remain browser-owned. Custom pointer capture starts only after horizontal movement, never on initial press. Holds of450ms or longer and context menus do not become caption taps. Close, previous/next and the compact year control remain visible, with semantic labels and keyboard focus.
 
 ## Data and functional repairs
 
@@ -18,9 +18,9 @@ The original optional swipe, pinch, double-tap zoom, and tap-to-hide-caption ges
 
 ## Saving in WeChat
 
-The save action displays the actual original image in a same-page dark dialog, with an obvious return control. It does not use download links, blobs, fetch-to-download, or a new window: WeChat on iPhone can turn downloads into an unusable zero-byte file preview. The original image retains its native long-press/right-click menu.
+The main viewer already displays the full original. The save button shows an inline long-press hint in the existing caption slot; it does not open another dialog, navigate, or replace the image. “知道了” dismisses that hint. Caption and hint share the same reserved grid cell, so showing/hiding either must not move the photo.
 
-Saving is controlled by the browser; do not claim a photo has been saved without confirmation. A real WeChat phone check remains necessary. Narrow desktop browser checks do not substitute for that.
+No download links, blobs, fetch-to-download or new windows are used. The image element keeps intrinsic-ratio dimensions and native touch callout. Context menus are not cancelled, and post-long-press synthetic clicks do not trigger custom tap behavior. If saving is unavailable in WeChat, the inline hint suggests trying the phone browser. Actual WeChat behavior still requires a real-phone check; a desktop right-click test is not a substitute.
 
 ## Checks
 
@@ -43,4 +43,4 @@ Music: Meditation Impromptu 03 by Kevin MacLeod (incompetech.com), CC BY 3.0.
 
 ## Keep controls off the photograph
 
-The dark viewer now reserves a compact top row for year/save/close and a bottom row for previous/count/next. The image fits its own stage at its natural aspect ratio; the caption is a separate dark row. Do not return to floating controls over the image. Check control/image rectangle intersections on both portrait and landscape photos at narrow, short phone-sized viewports. The save overlay retains intrinsic-ratio image sizing and native long-press behavior.
+The dark viewer now reserves a compact top row for year/save/close and a bottom row for previous/count/next. The image fits its own stage at its natural aspect ratio; the caption is a separate dark row. Do not return to floating controls over the image. Check control/image rectangle intersections on both portrait and landscape photos at narrow, short phone-sized viewports. The main image retains intrinsic-ratio sizing and native long-press behavior.

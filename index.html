@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>外婆的时光相册</title>
-<link rel="stylesheet" href="album.css?v=20260930-controls">
+<link rel="stylesheet" href="album.css?v=20260930-hints">
 <script src="photos.js?v=20260930-orientation1-final" defer></script>
-<script src="album.js?v=20260930-controls" defer></script>
+<script src="album.js?v=20260930-hints" defer></script>
 </head>
 <body>
 <div id="cover">
@@ -30,22 +30,20 @@
 <noscript><p>请开启浏览器的 JavaScript 后刷新，就能看到相册。</p></noscript>
 <dialog id="viewer" aria-labelledby="vtitle" aria-describedby="vdesc">
   <header class="viewer-topbar">
-    <select id="viewerYearSelect" aria-label="切换年份，查看这一年的第一张照片"></select>
-    <button id="savePhoto">保存照片</button>
-    <button class="vbtn" id="vclose" aria-label="返回相册" title="返回相册" autofocus>✕</button>
+    <label class="viewer-year-picker"><span>年份</span><select id="viewerYearSelect" aria-label="切换年份，查看这一年的第一张照片"></select></label>
+    <button id="savePhoto" aria-controls="saveHelp" aria-expanded="false">保存</button>
+    <button class="vbtn" id="vclose" aria-label="返回相册" title="返回相册" autofocus>返回相册</button>
   </header>
   <div id="stage"><img id="vimg" alt=""><div id="imageFeedback" role="status" hidden><p id="imageStatus"></p><button id="retryImage" hidden>重新加载</button></div></div>
-  <div id="vbar"><div class="when"><span id="vwhen"></span> · <span id="vtitle"></span></div><div class="what" id="vdesc"></div></div>
+  <div id="vbar">
+    <div id="captionCopy" class="caption-copy" aria-hidden="false"><div class="when"><span id="vwhen"></span> · <span id="vtitle"></span></div><div class="what" id="vdesc"></div></div>
+    <div id="saveHelp" class="save-help" role="status" aria-hidden="true"><p>长按照片，选择“保存图片”</p><p>若没有保存选项，可用手机浏览器打开本页重试。电脑可右键保存。</p></div>
+  </div>
   <nav class="viewer-bottom" aria-label="切换照片">
     <button class="vbtn" id="vprev" aria-label="上一张">‹ 上一张</button>
     <div class="count" id="vcount" aria-live="polite"></div>
     <button class="vbtn" id="vnext" aria-label="下一张">下一张 ›</button>
   </nav>
-</dialog>
-<dialog id="saveViewer" aria-labelledby="saveHint">
-  <button id="closeSave" autofocus>‹ 返回照片</button>
-  <div class="save-image-area"><img id="saveImage" alt=""><p id="saveImageStatus" role="status" hidden>原图暂时没加载出来，请返回后重试。</p></div>
-  <div class="save-instructions"><p id="saveHint">长按照片，选择“保存图片”</p><p>如果没有保存选项，可用手机浏览器打开相册后再试。电脑上可右键保存图片。</p></div>
 </dialog>
 <audio id="bgm" loop preload="none" playsinline src="music/bgm.mp3"></audio>
 </body>
