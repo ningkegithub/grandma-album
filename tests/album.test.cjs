@@ -64,3 +64,5 @@ for(const id of ['vclose','vprev','vnext','savePhoto','viewerYearSelect'])assert
 assert.ok(html.indexOf('class="viewer-topbar"')<html.indexOf('id="stage"'));assert.ok(html.indexOf('class="viewer-bottom"')>html.indexOf('id="vbar"'));
 assert.ok(!script.includes('--caption-height'));assert.ok(!css.includes('#viewer.hideui #savePhoto'));
 console.log('PASS:reserved top/photo/caption/bottom rows; all navigation and save controls outside photo; 44px targets retained.');
+
+run('showPhoto(0)');ids.stage.dispatch('pointerdown',{...pointer,button:2});now+=50;ids.stage.dispatch('pointerup',{...pointer,button:2});assert.equal(ids.viewer.classList.contains('hideui'),false);assert.equal(run('points.size'),0);console.log('PASS:secondary-button press/release cannot toggle captions before a native context menu.');

@@ -78,7 +78,7 @@ function resetInteraction(){releaseCaptures();points.clear();gestureMode='idle';
 function suppressFollowingClick(){ignoreClickUntil=Date.now()+1200;ignoreNextClick=true;}
 function finishNativeGesture(){suppressFollowingClick();resetInteraction();}
 stage.addEventListener('pointerdown',e=>{
-  if(e.target.closest('button'))return;
+  if((e.button!==undefined&&e.button!==0)||e.target.closest('button'))return;
   if(points.size===0){gestureMode='pending';hadMultiple=false;ignoreNextClick=false;}
   points.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,started:Date.now(),distance:0});
   if(points.size>1){hadMultiple=true;gestureMode='native';releaseCaptures();}
