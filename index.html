@@ -4,48 +4,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>外婆的时光相册</title>
-<link rel="stylesheet" href="album.css?v=20260930-3">
+<link rel="stylesheet" href="album.css?v=20260930-original">
 <script src="photos.js?v=20260930-orientation" defer></script>
-<script src="album.js?v=20260930-3" defer></script>
+<script src="album.js?v=20260930-original" defer></script>
 </head>
 <body>
-<div id="page">
-<header id="cover">
-  <p class="dedication">给外婆 · 黎桂华</p>
-  <div class="cover-photo"><img src="thumbs/t001.jpg" alt="2004年，家人在长城石碑前合影" width="600" height="450"></div>
+<div id="cover">
+  <div class="seal">外婆</div>
   <h1>时光相册</h1>
-  <p id="albumMeta">2004 — 2026 · 836 张照片</p>
-  <button class="primary" id="startBtn">打开相册</button>
-  <p id="lastViewed" class="quiet" hidden></p>
-</header>
+  <div class="sub">献给我们最爱的外婆 · 黎桂华</div>
+  <div class="meta">2004 — 2026</div>
+  <button class="btn" id="startBtn">打开相册</button>
+  <div class="credit">背景音乐 · Meditation Impromptu 03<br>Kevin MacLeod（incompetech.com）· CC BY 3.0 授权</div>
+</div>
+<button id="musicBtn" title="播放背景音乐" aria-label="播放背景音乐" aria-pressed="false">♫</button>
 <main id="album" hidden>
-  <header class="album-heading"><h1 tabindex="-1" id="albumHeading">时光相册</h1><button id="musicBtn" class="quiet-button" aria-pressed="false" aria-label="播放背景音乐">音乐 · 关</button></header>
   <nav id="yearToolbar" class="toolbar" aria-label="按年份看照片">
-    <label class="year-picker"><span>年份</span><select id="yearSelect" aria-label="选择年份，选择后直接跳到这一年"><option value="" disabled selected>按年份看</option></select></label>
+    <label class="year-picker"><span>年份</span><select id="yearSelect" aria-label="选择年份，选择后直接跳到这一年"></select></label>
     <span id="photoTotal">836 张照片</span>
   </nav>
-  <p id="musicStatus" class="status" role="status"></p>
+  <p id="musicStatus" role="status"></p>
   <div id="timeline"></div>
-  <footer><p>把每一个笑容都收好</p><a href="#albumHeading">回到开头</a><p class="credit">音乐：Meditation Impromptu 03<br>Kevin MacLeod（incompetech.com）<br><a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0 授权</a></p></footer>
+  <footer>愿时光温柔以待<br>把每一个笑容都收好 ❤</footer>
 </main>
-<noscript><p class="noscript">请开启浏览器的 JavaScript 后刷新，就能看到相册。</p></noscript>
-</div>
-<dialog id="viewer" aria-labelledby="vtitle" aria-describedby="vwhen">
-  <div class="viewer-layout">
-    <header class="viewer-toolbar"><button id="vclose" class="quiet-button" autofocus>‹ 返回相册</button><select id="viewerYearSelect" aria-label="切换年份，查看这一年的第一张照片"></select><p id="vcount" aria-live="polite"></p></header>
-    <div id="viewerContent">
-      <div id="stage"><img id="vimg" alt=""><div id="imageFeedback" role="status"><p id="imageStatus"></p><button id="retryImage" hidden>重新加载</button></div></div>
-      <section id="vbar"><div class="caption-heading"><p id="vwhen"></p><button id="savePhoto" class="quiet-button">保存照片</button></div><h2 id="vtitle"></h2><p id="vdesc"></p></section>
-    </div>
-    <nav class="viewer-navigation" aria-label="切换照片"><button id="vprev">‹ 上一张</button><button id="vnext">下一张 ›</button></nav>
-  </div>
+<noscript><p>请开启浏览器的 JavaScript 后刷新，就能看到相册。</p></noscript>
+<dialog id="viewer" aria-labelledby="vtitle" aria-describedby="vdesc">
+  <div id="stage"><img id="vimg" alt=""><div id="imageFeedback" role="status" hidden><p id="imageStatus"></p><button id="retryImage" hidden>重新加载</button></div></div>
+  <div id="vbar"><div class="when"><span id="vwhen"></span> · <span id="vtitle"></span></div><div class="what" id="vdesc"></div><div class="count" id="vcount" aria-live="polite"></div></div>
+  <select id="viewerYearSelect" aria-label="切换年份，查看这一年的第一张照片"></select>
+  <button class="vbtn" id="vclose" aria-label="返回相册" title="返回相册" autofocus>✕</button>
+  <button class="vbtn" id="vprev" aria-label="上一张" title="上一张">‹</button>
+  <button class="vbtn" id="vnext" aria-label="下一张" title="下一张">›</button>
+  <button id="savePhoto">保存照片</button>
 </dialog>
-<dialog id="saveViewer" aria-labelledby="saveTitle" aria-describedby="saveHint">
-  <div class="save-layout">
-    <header class="viewer-toolbar"><button id="closeSave" class="quiet-button" autofocus>‹ 返回照片</button><h2 id="saveTitle">保存照片</h2></header>
-    <div class="save-image-area"><img id="saveImage" alt=""><p id="saveImageStatus" role="status" hidden>原图暂时没加载出来，请返回后重试。</p></div>
-    <div class="save-instructions"><p id="saveHint">长按照片，选择“保存图片”</p><p class="quiet">如果没有保存选项，可用手机浏览器打开相册后再试。电脑上可右键保存图片。</p></div>
-  </div>
+<dialog id="saveViewer" aria-labelledby="saveHint">
+  <button id="closeSave" autofocus>‹ 返回照片</button>
+  <div class="save-image-area"><img id="saveImage" alt=""><p id="saveImageStatus" role="status" hidden>原图暂时没加载出来，请返回后重试。</p></div>
+  <div class="save-instructions"><p id="saveHint">长按照片，选择“保存图片”</p><p>如果没有保存选项，可用手机浏览器打开相册后再试。电脑上可右键保存图片。</p></div>
 </dialog>
 <audio id="bgm" loop preload="none" playsinline src="music/bgm.mp3"></audio>
 </body>

@@ -1,15 +1,28 @@
 # 外婆的时光相册
 
-A small static album for comfortable reading. No build step or third-party script dependencies.
+A static family photo album. No build step or third-party script dependencies.
 
-## Files
+## Preserve the original design
 
-- `photos.js` is the single source for all 836 photo records. The timeline and viewer use the same stable chronological order. Keep uncertain information explicitly uncertain.
-- `album.js` provides year navigation, accessible full-size viewing, local-device resume, and opt-in music.
-- `album.css` defaults to one generous column on phones, with two columns on wider screens.
-- Existing `photos/`, `thumbs/`, and `music/` assets are used unchanged. The unreferenced p837/p838 assets are retained.
+The owner's chosen visual baseline is original commit `e81aa936dc4bb08edc306bdb3766bcad436dd9f1`: the warm-paper seal cover, three-column square thumbnail overview with compact date/title captions, and pure dark full-screen photo viewer. Do not substitute single-column cards, an editorial cover, or large viewer panels. Thumbnail density and the original photo-viewing experience are intentional.
 
-## Check
+The original optional swipe, pinch, double-tap zoom, and tap-to-hide-caption gestures are retained. Close, previous/next and the compact year control remain visible. Semantic controls and keyboard focus management are maintained.
+
+## Data and functional repairs
+
+- `photos.js` is the single source for all 836 records; cards and viewer share stable chronological order.
+- Keep dates, people, and uncertain information faithful to the source. Do not invent relationships or events.
+- Preserve orientation-corrected originals/thumbnails and their cache-busting URL suffixes. The unreferenced p837/p838 assets are retained.
+- The grid's small sticky year picker remains reachable on long lists. The viewer's year picker jumps directly to the first photo of the chosen year. Closing the viewer restores list position and focus.
+- Music is on demand, never autoplayed. Failed image loads provide retry feedback.
+
+## Saving in WeChat
+
+The save action displays the actual original image in a same-page dark dialog, with an obvious return control. It does not use download links, blobs, fetch-to-download, or a new window: WeChat on iPhone can turn downloads into an unusable zero-byte file preview. The original image retains its native long-press/right-click menu.
+
+Saving is controlled by the browser; do not claim a photo has been saved without confirmation. A real WeChat phone check remains necessary. Narrow desktop browser checks do not substitute for that.
+
+## Checks
 
 ```sh
 node --check album.js
@@ -18,24 +31,12 @@ node tests/album.test.cjs
 python -m http.server 8765
 ```
 
-The Node test exercises data and application behavior using a minimal DOM test double. It is not a browser layout or accessibility audit. Check the live Pages preview on mobile and desktop, including keyboard Tab/Escape, thumbnail failure/retry, repeated navigation, resume after reload, and manual music controls. The cover must be checked with and without saved progress; short viewports and long captions must remain usable.
+The Node test uses a minimal DOM test double and is not a visual browser audit. Compare live screenshots against the original cover/grid/viewer, then check year jumps, list restoration, keyboard/Escape, optional gestures, failed-image retry, and the inline original-image save path on phone-sized viewports.
 
-## Preview and release
+## Publication
 
 GitHub Pages is the review preview: https://ningkegithub.github.io/grandma-album/
 
-Do not publish to Netlify until the owner approves the completed changes. Keep automatic Netlify deployment disabled while reviewing.
+Do not publish to Netlify until the owner explicitly approves. Keep Netlify automatic deployment disabled during review.
 
 Music: Meditation Impromptu 03 by Kevin MacLeod (incompetech.com), CC BY 3.0.
-
-## Saving and phone verification
-
-The save action displays the real original image in a same-page dialog. It deliberately does not use download links, blobs, fetch-to-download, or a new window: WeChat on iPhone can turn download links into an unusable zero-byte file preview. Long-press/right-click saving is controlled by the browser. Never claim a photo has been saved without confirmation from that browser. A real WeChat phone check remains necessary; desktop narrow-window testing is not a substitute.
-
-The viewer has one scrolling photo-and-caption area, a quiet back/count header, and fixed-in-layout previous/next controls. There is one music control in the album header. Keyboard focus outlines are shown after keyboard input rather than persisting after touch.
-
-## Year navigation
-
-The single year toolbar stays at the top while browsing and reflects the year at the top of the visible timeline. Choosing a year jumps immediately, with the heading clear of the sticky toolbar. The full-photo viewer also offers a year selector that opens the first photo of that year. Returning from the viewer restores the exact timeline scroll position; resuming after a fresh load first positions the timeline at the saved photo.
-
-Design references: [Apple's date browsing guide](https://support.apple.com/guide/iphone/find-photos-and-videos-by-date-iph0ea0234e0/ios) and [Google Photos' iPhone guide](https://support.google.com/photos/answer/6220402?co=GENIE.Platform%3DiOS&hl=en-GB). These motivate direct time navigation and date access inside the photo viewer. The native year picker keeps large touch targets without a separate timeline rail or a new floating toolbar.
