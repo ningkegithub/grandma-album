@@ -449,8 +449,8 @@ const PHOTOS = [
     "desc": "爱尔兰戈尔韦街头的夜晚，外婆和宁可在王尔德铜像前合影。"
   },
   {
-    "src": "photos/p065.jpg",
-    "thumb": "thumbs/t065.jpg",
+    "src": "photos/p065.jpg?v=orientation1",
+    "thumb": "thumbs/t065.jpg?v=orientation1",
     "when": "2007年9月1日",
     "title": "餐厅聚餐",
     "desc": "爱尔兰戈尔韦一家中餐厅里，外婆、卢慧、宁可和朋友们聚餐合影。"
@@ -1772,8 +1772,8 @@ const PHOTOS = [
     "desc": "深圳沙头角中英街铜雕前，外婆和几位老人、朋友合影。"
   },
   {
-    "src": "photos/p254.jpg",
-    "thumb": "thumbs/t254.jpg",
+    "src": "photos/p254.jpg?v=orientation1",
+    "thumb": "thumbs/t254.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "茶壶前合影",
     "desc": "广东深圳市南山区世界之窗，外婆和朋友们在大茶壶雕塑前合影。"
@@ -1842,8 +1842,8 @@ const PHOTOS = [
     "desc": "广东深圳市南山区世界之窗，外婆和朋友们在湖畔合影留念。"
   },
   {
-    "src": "photos/p264.jpg",
-    "thumb": "thumbs/t264.jpg",
+    "src": "photos/p264.jpg?v=orientation1",
+    "thumb": "thumbs/t264.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "茶壶合影",
     "desc": "广东深圳市南山区世界之窗，外婆和朋友们在大茶壶前合影。"
@@ -1940,8 +1940,8 @@ const PHOTOS = [
     "desc": "广东深圳市南山区深圳湾体育中心，外婆和朋友从石雕圆孔中探出头来合影。"
   },
   {
-    "src": "photos/p278.jpg",
-    "thumb": "thumbs/t278.jpg",
+    "src": "photos/p278.jpg?v=orientation1",
+    "thumb": "thumbs/t278.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "全家合影",
     "desc": "广东深圳市南山区深圳湾体育中心，外婆抱着二东和朋友们合影。"
@@ -2038,22 +2038,22 @@ const PHOTOS = [
     "desc": "广东深圳市盐田区明斯克航母世界，外婆和同伴们在明斯克号航母前合影。"
   },
   {
-    "src": "photos/p292.jpg",
-    "thumb": "thumbs/t292.jpg",
+    "src": "photos/p292.jpg?v=orientation1",
+    "thumb": "thumbs/t292.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "狮身人面像",
     "desc": "广东深圳市南山区世界之窗，外婆在狮身人面像前留影。"
   },
   {
-    "src": "photos/p293.jpg",
-    "thumb": "thumbs/t293.jpg",
+    "src": "photos/p293.jpg?v=orientation1",
+    "thumb": "thumbs/t293.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "金字塔前",
     "desc": "广东深圳市南山区世界之窗，外婆在金字塔前拍照留念。"
   },
   {
-    "src": "photos/p294.jpg",
-    "thumb": "thumbs/t294.jpg",
+    "src": "photos/p294.jpg?v=orientation1",
+    "thumb": "thumbs/t294.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "铁塔下留影",
     "desc": "广东深圳市南山区世界之窗，外婆靠在花丛边与埃菲尔铁塔合影。"
@@ -2080,8 +2080,8 @@ const PHOTOS = [
     "desc": "广东深圳市南山区深圳湾体育中心，外婆和朋友们在水边留影，笑容灿烂。"
   },
   {
-    "src": "photos/p298.jpg",
-    "thumb": "thumbs/t298.jpg",
+    "src": "photos/p298.jpg?v=orientation1",
+    "thumb": "thumbs/t298.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "凯旋门前",
     "desc": "广东深圳市南山区世界之窗，外婆手持红花在凯旋门前留影。"
@@ -2129,29 +2129,29 @@ const PHOTOS = [
     "desc": "广东深圳市南山区深圳湾体育中心，外婆和球友们拿着柔力球拍合影。"
   },
   {
-    "src": "photos/p305.jpg",
-    "thumb": "thumbs/t305.jpg",
+    "src": "photos/p305.jpg?v=orientation1",
+    "thumb": "thumbs/t305.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "铁塔下合影",
     "desc": "广东深圳市南山区世界之窗，外婆和朋友们在埃菲尔铁塔下合影。"
   },
   {
-    "src": "photos/p306.jpg",
-    "thumb": "thumbs/t306.jpg",
+    "src": "photos/p306.jpg?v=orientation1",
+    "thumb": "thumbs/t306.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "冰雪世界",
     "desc": "广东深圳市南山区世界之窗，外婆在冰雪世界里与雪人合影。"
   },
   {
-    "src": "photos/p307.jpg",
-    "thumb": "thumbs/t307.jpg",
+    "src": "photos/p307.jpg?v=orientation1",
+    "thumb": "thumbs/t307.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "大雪人合影",
     "desc": "广东深圳市南山区世界之窗，外婆站在大雪人旁合影留念。"
   },
   {
-    "src": "photos/p308.jpg",
-    "thumb": "thumbs/t308.jpg",
+    "src": "photos/p308.jpg?v=orientation1",
+    "thumb": "thumbs/t308.jpg?v=orientation1",
     "when": "2013年9月1日",
     "title": "雪人下留影",
     "desc": "广东深圳市南山区世界之窗，外婆在雪人下微笑留影。"
@@ -3480,8 +3480,8 @@ const PHOTOS = [
     "desc": "深圳南山万象天地内，外婆和家人带着两个孩子在圣诞树前合影。"
   },
   {
-    "src": "photos/p498.jpg",
-    "thumb": "thumbs/t498.jpg",
+    "src": "photos/p498.jpg?v=orientation1",
+    "thumb": "thumbs/t498.jpg?v=orientation1",
     "when": "2017年12月10日",
     "title": "邮轮纪念照",
     "desc": "深圳至越南邮轮上的纪念照，外婆与外公笑容灿烂。"
@@ -4397,8 +4397,8 @@ const PHOTOS = [
     "desc": "云南大理洱海生态廊道，外婆戴着墨镜站在林间小路上。"
   },
   {
-    "src": "photos/p629.jpg",
-    "thumb": "thumbs/t629.jpg",
+    "src": "photos/p629.jpg?v=orientation1",
+    "thumb": "thumbs/t629.jpg?v=orientation1",
     "when": "2023年3月16日",
     "title": "洱海边",
     "desc": "云南大理洱海边，外婆在湖水旁。"
