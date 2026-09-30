@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>外婆的时光相册</title>
-<link rel="stylesheet" href="album.css?v=20260930-2">
-<script src="photos.js" defer></script>
-<script src="album.js?v=20260930-2" defer></script>
+<link rel="stylesheet" href="album.css?v=20260930-3">
+<script src="photos.js?v=20260930-orientation" defer></script>
+<script src="album.js?v=20260930-3" defer></script>
 </head>
 <body>
 <div id="page">
@@ -20,8 +20,8 @@
 </header>
 <main id="album" hidden>
   <header class="album-heading"><h1 tabindex="-1" id="albumHeading">时光相册</h1><button id="musicBtn" class="quiet-button" aria-pressed="false" aria-label="播放背景音乐">音乐 · 关</button></header>
-  <nav class="toolbar" aria-label="按年份看照片">
-    <select id="yearSelect" aria-label="选择年份，选择后直接跳到这一年"><option value="" disabled selected>按年份看</option></select>
+  <nav id="yearToolbar" class="toolbar" aria-label="按年份看照片">
+    <label class="year-picker"><span>年份</span><select id="yearSelect" aria-label="选择年份，选择后直接跳到这一年"><option value="" disabled selected>按年份看</option></select></label>
     <span id="photoTotal">836 张照片</span>
   </nav>
   <p id="musicStatus" class="status" role="status"></p>
@@ -32,7 +32,7 @@
 </div>
 <dialog id="viewer" aria-labelledby="vtitle" aria-describedby="vwhen">
   <div class="viewer-layout">
-    <header class="viewer-toolbar"><button id="vclose" class="quiet-button" autofocus>‹ 返回相册</button><p id="vcount" aria-live="polite"></p></header>
+    <header class="viewer-toolbar"><button id="vclose" class="quiet-button" autofocus>‹ 返回相册</button><select id="viewerYearSelect" aria-label="切换年份，查看这一年的第一张照片"></select><p id="vcount" aria-live="polite"></p></header>
     <div id="viewerContent">
       <div id="stage"><img id="vimg" alt=""><div id="imageFeedback" role="status"><p id="imageStatus"></p><button id="retryImage" hidden>重新加载</button></div></div>
       <section id="vbar"><div class="caption-heading"><p id="vwhen"></p><button id="savePhoto" class="quiet-button">保存照片</button></div><h2 id="vtitle"></h2><p id="vdesc"></p></section>
