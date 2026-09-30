@@ -30,7 +30,7 @@ function startAlbum(focus=true){renderAlbum();$('cover').hidden=true;$('album').
 function showPhoto(index){
   current=Math.max(0,Math.min(photos.length-1,index));const p=photos[current];
   $('viewerYearSelect').value=photoYear(p);$('vwhen').textContent=p.when;$('vtitle').textContent=p.title;$('vdesc').textContent=p.desc;$('vcount').textContent=`${current+1} / ${photos.length}`;
-  $('vprev').disabled=current===0;$('vnext').disabled=current===photos.length-1;resetImageTransform();viewer.classList.remove('hideui');requestAnimationFrame(()=>{viewer.style.setProperty('--caption-height',$('vbar').getBoundingClientRect().height+'px');});
+  $('vprev').disabled=current===0;$('vnext').disabled=current===photos.length-1;resetImageTransform();viewer.classList.remove('hideui');
   loadImage(p);
 }
 function loadImage(p){
@@ -72,4 +72,4 @@ stage.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;st
 stage.addEventListener('pointermove',e=>{if(!points.has(e.pointerId))return;const previous=points.get(e.pointerId),dx=e.clientX-previous.x,dy=e.clientY-previous.y;points.set(e.pointerId,{x:e.clientX,y:e.clientY});if(points.size===2){const a=[...points.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinchDistance>0){scale=Math.max(1,Math.min(5,pinchScale*d/pinchDistance));clampImage();}moved=true;}else if(points.size===1){if(Math.abs(e.clientX-swipeX)>12||Math.abs(dy)>12)moved=true;if(scale>1){tx+=dx;ty+=dy;clampImage();}}});
 stage.addEventListener('pointerup',e=>{if(!points.has(e.pointerId))return;points.delete(e.pointerId);if(points.size)return;const now=Date.now();if(!moved){if(now-lastTap<320){if(tapTimer){clearTimeout(tapTimer);tapTimer=null;}scale=scale>1?1:2.5;tx=0;ty=0;applyImageTransform();}else{if(tapTimer)clearTimeout(tapTimer);tapTimer=setTimeout(()=>{tapTimer=null;viewer.classList.toggle('hideui');},330);}lastTap=now;}else if(scale===1&&swipeX!==null){const dx=e.clientX-swipeX;if(Math.abs(dx)>60)showPhoto(current+(dx<0?1:-1));}swipeX=null;});
 stage.addEventListener('pointercancel',e=>{points.delete(e.pointerId);if(!points.size)swipeX=null;});
-window.addEventListener('resize',()=>{if(viewer.open)viewer.style.setProperty('--caption-height',$('vbar').getBoundingClientRect().height+'px');});
+

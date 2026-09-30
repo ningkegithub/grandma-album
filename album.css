@@ -32,32 +32,22 @@ footer{text-align:center;color:#b3a68d;font-size:12px;padding:30px 20px calc(30p
   border:1px solid var(--line);background:rgba(255,255,255,.92);font-size:20px;display:none;align-items:center;justify-content:center;
   box-shadow:0 4px 14px rgba(0,0,0,.12);cursor:pointer;}
 
-/* ---------- 查看器 ---------- */
-#viewer{position:fixed;inset:0;z-index:100;background:rgba(24,18,12,.96);display:none;
-  touch-action:none;overscroll-behavior:contain;}
-#viewer.open{display:block;}
-#stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-#stage img{max-width:100vw;max-height:100dvh;object-fit:contain;will-change:transform;user-select:none;-webkit-user-drag:none;}
-#vbar{position:absolute;left:0;right:0;bottom:0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));
-  background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;
-  transition:opacity .25s ease,transform .25s ease;}
-#viewer.hideui #vbar{opacity:0;pointer-events:none;transform:translateY(10px);}
-#viewer.hideui #savePhoto{opacity:0;pointer-events:none;}
-#savePhoto{transition:opacity .25s ease;}
-#vbar .when{font-size:13px;color:#f3d9a8;letter-spacing:1px;margin-bottom:4px;}
-#vbar .what{font-size:16px;font-weight:600;}
-#vbar .count{position:absolute;right:16px;top:14px;font-size:12px;color:#cbb;}
-.vbtn{position:absolute;top:calc(12px + env(safe-area-inset-top));width:42px;height:42px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.4);color:#fff;font-size:18px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;}
-#vclose{right:12px;}
-#vprev,#vnext{top:50%;transform:translateY(-50%);width:46px;height:46px;}
-#vprev{left:8px;}#vnext{right:8px;}
-#savePhoto{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom));
-  background:var(--red);color:#fff;border:none;border-radius:999px;padding:12px 34px;font-size:15px;letter-spacing:2px;
-  box-shadow:0 8px 24px rgba(0,0,0,.4);cursor:pointer;z-index:5;}
-#toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;
-  padding:10px 20px;border-radius:999px;font-size:13px;display:none;z-index:200;white-space:nowrap;}
+/* ---------- 查看器：控件在照片外，保留原来的深色底 ---------- */
+#viewer{position:fixed;inset:0;z-index:100;background:#18120c;display:none;overscroll-behavior:contain;}
+#viewer[open]{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;}
+.viewer-topbar{display:flex;align-items:center;gap:8px;min-height:52px;padding:4px 12px;padding-top:calc(4px + env(safe-area-inset-top));}
+#stage{position:relative;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;}
+#stage img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;flex:none;will-change:transform;user-select:none;-webkit-user-drag:none;}
+#vbar{position:static;padding:8px 16px 10px;background:transparent;color:#fff;}
+#viewer.hideui #vbar{display:none;}
+#vbar .when{font-size:13px;color:#f3d9a8;letter-spacing:1px;margin-bottom:4px;line-height:1.5;}
+#vbar .what{font-size:16px;font-weight:600;line-height:1.55;}
+.vbtn{position:static;min-height:44px;min-width:44px;border:0;background:transparent;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+#vclose{width:44px;flex:none;font-size:20px;}
+#savePhoto{position:static;margin-left:auto;min-height:44px;padding:8px 12px;border:0;background:transparent;color:#f3d9a8;font-size:15px;cursor:pointer;white-space:nowrap;}
+.viewer-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:4px 12px calc(4px + env(safe-area-inset-bottom));}
+#vprev,#vnext{padding:6px 10px;white-space:nowrap;}
+#vcount{font-size:12px;color:#cbb;white-space:nowrap;}
 /* Functional repairs, without changing the original cover/grid/viewer design. */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}[hidden]{display:none!important}
 button,select{font-family:inherit}button:focus,select:focus,[tabindex]:focus{outline:none}html[data-input="keyboard"] :focus-visible{outline:2px solid #76b7d7;outline-offset:3px}button:disabled{opacity:.35;cursor:default}
@@ -65,8 +55,8 @@ button,select{font-family:inherit}button:focus,select:focus,[tabindex]:focus{out
 #musicBtn{display:flex}#musicStatus:empty{display:none}#musicStatus{font-size:13px;color:var(--red);text-align:center;padding:8px}
 .toolbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;margin:0 -14px;padding:6px 72px 6px 14px;padding-top:calc(6px + env(safe-area-inset-top));background:rgba(250,246,238,.97);border-bottom:1px solid var(--line)}
 .year-picker{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--soft)}.toolbar select{min-height:44px;font-size:14px;border:0;background:transparent;color:var(--red);padding:6px 2px}#photoTotal{font-size:12px;color:var(--soft);white-space:nowrap}.year{scroll-margin-top:calc(72px + env(safe-area-inset-top))}
-#viewer{padding:0;border:0;margin:0;width:100vw;max-width:none;height:100vh;height:100dvh;max-height:none;color:#fff;overflow:hidden}#viewer[open]{display:block}#viewer::backdrop,#saveViewer::backdrop{background:#18120c}#stage img{width:auto;height:auto}#vbar .when{padding-right:66px;line-height:1.5}#vbar .what{line-height:1.55}.vbtn{min-width:44px;min-height:44px}#savePhoto{bottom:calc(var(--caption-height,72px) + 14px);min-height:44px}
-#viewerYearSelect{position:absolute;left:12px;top:calc(12px + env(safe-area-inset-top));min-height:44px;max-width:112px;padding:8px 10px;border:1px solid rgba(255,255,255,.35);border-radius:22px;background:rgba(0,0,0,.4);color:#fff;font-size:14px}#viewerYearSelect option{background:#241e18;color:white}
+#viewer{padding:0;border:0;margin:0;width:100vw;max-width:none;height:100vh;height:100dvh;max-height:none;color:#fff;overflow:hidden}#viewer::backdrop,#saveViewer::backdrop{background:#18120c}
+#viewerYearSelect{position:static;min-height:44px;max-width:112px;padding:8px 10px;border:1px solid rgba(255,255,255,.35);border-radius:22px;background:rgba(0,0,0,.4);color:#fff;font-size:14px}#viewerYearSelect option{background:#241e18;color:white}
 #imageFeedback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#18120c;color:white;text-align:center;padding:24px;font-size:16px}#retryImage{min-height:44px;padding:8px 20px;border:1px solid #aaa;border-radius:22px;background:transparent;color:white;font-size:16px}
 #saveViewer{padding:0;border:0;margin:0;width:100vw;max-width:none;height:100vh;height:100dvh;max-height:none;overflow:hidden;background:#18120c;color:#fff}#saveViewer[open]{display:flex;flex-direction:column}#closeSave{align-self:flex-start;min-height:44px;margin:8px 12px;padding:8px 12px;border:1px solid rgba(255,255,255,.35);border-radius:22px;background:transparent;color:#fff;font-size:16px}.save-image-area{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}#saveImage{display:block;width:auto;height:auto;max-width:100%;max-height:100%;flex:none;transform:none;transition:none;animation:none;-webkit-touch-callout:default;user-select:auto}.save-instructions{text-align:center;padding:12px 20px calc(16px + env(safe-area-inset-bottom));font-size:16px;line-height:1.6}.save-instructions p+p{font-size:12px;color:#c6bdb3;margin-top:6px}#saveImageStatus{padding:24px;text-align:center;line-height:1.6}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

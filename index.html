@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>外婆的时光相册</title>
-<link rel="stylesheet" href="album.css?v=20260930-save-ratio">
+<link rel="stylesheet" href="album.css?v=20260930-controls">
 <script src="photos.js?v=20260930-orientation1-final" defer></script>
-<script src="album.js?v=20260930-original" defer></script>
+<script src="album.js?v=20260930-controls" defer></script>
 </head>
 <body>
 <div id="cover">
@@ -29,13 +29,18 @@
 </main>
 <noscript><p>请开启浏览器的 JavaScript 后刷新，就能看到相册。</p></noscript>
 <dialog id="viewer" aria-labelledby="vtitle" aria-describedby="vdesc">
+  <header class="viewer-topbar">
+    <select id="viewerYearSelect" aria-label="切换年份，查看这一年的第一张照片"></select>
+    <button id="savePhoto">保存照片</button>
+    <button class="vbtn" id="vclose" aria-label="返回相册" title="返回相册" autofocus>✕</button>
+  </header>
   <div id="stage"><img id="vimg" alt=""><div id="imageFeedback" role="status" hidden><p id="imageStatus"></p><button id="retryImage" hidden>重新加载</button></div></div>
-  <div id="vbar"><div class="when"><span id="vwhen"></span> · <span id="vtitle"></span></div><div class="what" id="vdesc"></div><div class="count" id="vcount" aria-live="polite"></div></div>
-  <select id="viewerYearSelect" aria-label="切换年份，查看这一年的第一张照片"></select>
-  <button class="vbtn" id="vclose" aria-label="返回相册" title="返回相册" autofocus>✕</button>
-  <button class="vbtn" id="vprev" aria-label="上一张" title="上一张">‹</button>
-  <button class="vbtn" id="vnext" aria-label="下一张" title="下一张">›</button>
-  <button id="savePhoto">保存照片</button>
+  <div id="vbar"><div class="when"><span id="vwhen"></span> · <span id="vtitle"></span></div><div class="what" id="vdesc"></div></div>
+  <nav class="viewer-bottom" aria-label="切换照片">
+    <button class="vbtn" id="vprev" aria-label="上一张">‹ 上一张</button>
+    <div class="count" id="vcount" aria-live="polite"></div>
+    <button class="vbtn" id="vnext" aria-label="下一张">下一张 ›</button>
+  </nav>
 </dialog>
 <dialog id="saveViewer" aria-labelledby="saveHint">
   <button id="closeSave" autofocus>‹ 返回照片</button>

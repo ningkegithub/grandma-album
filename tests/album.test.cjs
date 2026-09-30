@@ -32,7 +32,7 @@ console.log('PASS:836 unique photos;chronological years/p502;lazy loading;direct
 for(const [i,y] of years.entries())y.rect={top:i*1000,bottom:(i+1)*1000};ids.yearToolbar.rect={bottom:60};run('viewer.close();syncVisibleYear()');assert.equal(ids.yearSelect.value,'2004');for(const y of years)y.rect.top-=years.findIndex(x=>x.id==='year-2025')*1000;run('syncVisibleYear()');assert.equal(ids.yearSelect.value,'2025');
 cards[0].click();ids.viewerYearSelect.value='2025';ids.viewerYearSelect.dispatch('change');assert.match(ids.vwhen.textContent,/^2025年/);ids.viewerYearSelect.value='2004';ids.viewerYearSelect.dispatch('change');assert.equal(ids.vcount.textContent,'1 / 836');ids.vclose.click();assert.match(css,/\.toolbar\{position:sticky;top:0/);console.log('PASS:sticky current year;viewer year jumps 2025 to 2004;exact list scroll restoration.');
 
-assert.match(css,/grid-template-columns:repeat\(3,1fr\)/);assert.ok(!css.includes('repeat(2,'));assert.ok(!html.includes('cover-photo'));assert.ok(!html.includes('viewer-layout'));assert.ok(!html.includes('viewerContent'));assert.match(css,/#stage\{position:absolute;inset:0/);assert.match(css,/#stage img\{max-width:100vw;max-height:100dvh/);assert.ok(!script.includes("p.desc,'card-desc'"));assert.equal(cards[0].children[1].children.length,2);console.log('PASS:original seal cover, three-column square thumbnail layout, compact date/title cards, full-screen dark image viewer, no redesign panels.');
+assert.match(css,/grid-template-columns:repeat\(3,1fr\)/);assert.ok(!css.includes('repeat(2,'));assert.ok(!html.includes('cover-photo'));assert.ok(!html.includes('viewer-layout'));assert.ok(!html.includes('viewerContent'));assert.match(css,/#stage\{position:relative;min-width:0;min-height:0/);assert.match(css,/#stage img\{[^}]*max-width:100%;max-height:100%/);assert.ok(!script.includes("p.desc,'card-desc'"));assert.equal(cards[0].children[1].children.length,2);console.log('PASS:original seal cover, three-column square thumbnail layout, compact date/title cards, dark image viewer, no redesign panels.');
 // Original optional gestures return without changing the save overlay's native image menu.
 ids.stage.setPointerCapture=()=>{};ids.stage.clientWidth=300;ids.stage.clientHeight=600;const pointer={pointerId:1,clientX:200,clientY:200,target:{closest:()=>null}};
 run('showPhoto(0)');ids.stage.dispatch('pointerdown',pointer);ids.stage.dispatch('pointermove',{...pointer,clientX:100});ids.stage.dispatch('pointerup',{...pointer,clientX:100});assert.equal(ids.vcount.textContent,'2 / 836');
@@ -44,3 +44,9 @@ for(const rule of ['width:auto','height:auto','max-width:100%','max-height:100%'
 assert.ok(!/(?:^|;)width:100%/.test(saveRule));assert.ok(!/(?:^|;)height:100%/.test(saveRule));assert.ok(!saveRule.includes('object-fit:contain'));
 assert.ok(!/\$\('saveImage'\)\.addEventListener\('(?:pointer|touch|contextmenu)/.test(script));
 console.log('PASS:save-image intrinsic-ratio CSS; bounded dimensions; no flex distortion/transform/animation; native long-press untouched.');
+
+assert.match(css,/#viewer\[open\]\{display:grid;grid-template-rows:auto minmax\(0,1fr\) auto auto/);
+for(const id of ['vclose','vprev','vnext','savePhoto','viewerYearSelect'])assert.ok(!new RegExp('#'+id+'\\{[^}]*position:absolute').test(css),id+' must not overlay photograph');
+assert.ok(html.indexOf('class="viewer-topbar"')<html.indexOf('id="stage"'));assert.ok(html.indexOf('class="viewer-bottom"')>html.indexOf('id="vbar"'));
+assert.ok(!script.includes('--caption-height'));assert.ok(!css.includes('#viewer.hideui #savePhoto'));
+console.log('PASS:reserved top/photo/caption/bottom rows; all navigation and save controls outside photo; 44px targets retained.');

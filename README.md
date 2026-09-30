@@ -40,3 +40,7 @@ GitHub Pages is the review preview: https://ningkegithub.github.io/grandma-album
 Do not publish to Netlify until the owner explicitly approves. Keep Netlify automatic deployment disabled during review.
 
 Music: Meditation Impromptu 03 by Kevin MacLeod (incompetech.com), CC BY 3.0.
+
+## Keep controls off the photograph
+
+The dark viewer now reserves a compact top row for year/save/close and a bottom row for previous/count/next. The image fits its own stage at its natural aspect ratio; the caption is a separate dark row. Do not return to floating controls over the image. Check control/image rectangle intersections on both portrait and landscape photos at narrow, short phone-sized viewports. The save overlay retains intrinsic-ratio image sizing and native long-press behavior.
