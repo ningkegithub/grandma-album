@@ -452,8 +452,8 @@ const PHOTOS = [
     "src": "photos/p065.jpg?v=orientation1",
     "thumb": "thumbs/t065.jpg?v=orientation1",
     "when": "2007年9月1日",
-    "title": "餐厅聚餐",
-    "desc": "爱尔兰戈尔韦一家中餐厅里，外婆、卢慧、宁可和朋友们聚餐合影。"
+    "title": "遗址前留影",
+    "desc": "爱尔兰戈尔韦之行中，在一处爬满常春藤的石头古迹遗址前，外婆留影纪念。"
   },
   {
     "src": "photos/p066.jpg",
