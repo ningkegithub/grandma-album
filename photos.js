@@ -1779,8 +1779,8 @@ const PHOTOS = [
     "desc": "广东深圳市南山区世界之窗，外婆和朋友们在大茶壶雕塑前合影。"
   },
   {
-    "src": "photos/p255.jpg",
-    "thumb": "thumbs/t255.jpg",
+    "src": "photos/p255.jpg?v=20261001",
+    "thumb": "thumbs/t255.jpg?v=20261001",
     "when": "2013年9月1日",
     "title": "莲花山公园",
     "desc": "广东深圳市福田区莲花山公园，外婆在刻字石碑旁留影。"
@@ -2507,8 +2507,8 @@ const PHOTOS = [
     "desc": "广西敢壮山布洛陀文化遗址景区内，外婆和家人们在石阶上合影。"
   },
   {
-    "src": "photos/p359.jpg",
-    "thumb": "thumbs/t359.jpg",
+    "src": "photos/p359.jpg?v=20261001",
+    "thumb": "thumbs/t359.jpg?v=20261001",
     "when": "2014年6月22日",
     "title": "车内说笑",
     "desc": "上一辆本田CR-V车内，外婆和两个孩子坐在后座上说笑。"
@@ -2675,11 +2675,11 @@ const PHOTOS = [
     "desc": "广西南宁市青秀区荔滨大道一带（邕江边），木栈道上，外婆抱着小宝宝，笑得开心。"
   },
   {
-    "src": "photos/p383.jpg",
-    "thumb": "thumbs/t383.jpg",
+    "src": "photos/p383.jpg?v=20261001",
+    "thumb": "thumbs/t383.jpg?v=20261001",
     "when": "2015年2月22日",
     "title": "春节·公园",
-    "desc": "广西南宁邕江边某公园，推着婴儿车散步，二东对着镜头比剪刀手。"
+    "desc": "广西南宁邕江边某公园，推着婴儿车散步，二东举起手中的饮料瓶。"
   },
   {
     "src": "photos/p384.jpg",
@@ -5447,11 +5447,11 @@ const PHOTOS = [
     "desc": "广西南宁，外婆拿着话筒和朋友们在KTV里合唱。"
   },
   {
-    "src": "photos/p779.jpg",
-    "thumb": "thumbs/t779.jpg",
+    "src": "photos/p779.jpg?v=20261001",
+    "thumb": "thumbs/t779.jpg?v=20261001",
     "when": "2023年3月24日",
-    "title": "剪刀手",
-    "desc": "广西南宁，外婆和外公在KTV里拿着话筒比剪刀手。"
+    "title": "KTV合影",
+    "desc": "广西南宁，外婆拿着话筒，和外公在KTV里合影。"
   },
   {
     "src": "photos/p780.jpg",
