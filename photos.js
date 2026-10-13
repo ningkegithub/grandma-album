@@ -176,8 +176,8 @@ const PHOTOS = [
     "desc": "爱尔兰戈尔韦街头，外婆和卢慧在红色小汽车旁合影。"
   },
   {
-    "src": "photos/p026.jpg",
-    "thumb": "thumbs/t026.jpg",
+    "src": "photos/p026.jpg?v=20261013",
+    "thumb": "thumbs/t026.jpg?v=20261013",
     "when": "2007年8月11日",
     "title": "海滨步道",
     "desc": "爱尔兰戈尔韦海滨步道上，外婆、卢慧和宁可三人合影。"
@@ -610,8 +610,8 @@ const PHOTOS = [
     "desc": "家中，外婆抱着新生不久的二东，和宁可、大东合影，大东吃着小手。"
   },
   {
-    "src": "photos/p088.jpg",
-    "thumb": "thumbs/t088.jpg",
+    "src": "photos/p088.jpg?v=20261013",
+    "thumb": "thumbs/t088.jpg?v=20261013",
     "when": "2010年2月16日",
     "title": "家中照看",
     "desc": "家中，外婆穿着睡衣抱着熟睡的二东，大东在旁玩耍，母慈孙乐。"
@@ -897,8 +897,8 @@ const PHOTOS = [
     "desc": "广西百色市田阳区头塘镇知青联谊会现场，外婆抱着二东与朋友合影。"
   },
   {
-    "src": "photos/p129.jpg",
-    "thumb": "thumbs/t129.jpg",
+    "src": "photos/p129.jpg?v=20261013",
+    "thumb": "thumbs/t129.jpg?v=20261013",
     "when": "2011年5月8日",
     "title": "饭店聚餐",
     "desc": "饭店里，外婆、外公带着大东、二东聚餐。"
@@ -911,8 +911,8 @@ const PHOTOS = [
     "desc": "室内游乐场球池里，外婆陪二东玩球。"
   },
   {
-    "src": "photos/p131.jpg",
-    "thumb": "thumbs/t131.jpg",
+    "src": "photos/p131.jpg?v=20261013",
+    "thumb": "thumbs/t131.jpg?v=20261013",
     "when": "2011年5月14日",
     "title": "游乐场玩车",
     "desc": "商场室内游乐场，大东和二东玩小汽车，外婆在一旁照看。"
@@ -1044,8 +1044,8 @@ const PHOTOS = [
     "desc": "家中，卢慧和二东捧着鲜花与外婆合影。"
   },
   {
-    "src": "photos/p150.jpg",
-    "thumb": "thumbs/t150.jpg",
+    "src": "photos/p150.jpg?v=20261013",
+    "thumb": "thumbs/t150.jpg?v=20261013",
     "when": "2012年5月16日",
     "title": "亲密合影",
     "desc": "家中，外婆、卢慧和二东脸贴脸合影。"
@@ -1289,15 +1289,15 @@ const PHOTOS = [
     "desc": "广东深圳市福田区公园里，外婆抱着二东在石狮子与石碑前合影。"
   },
   {
-    "src": "photos/p185.jpg",
-    "thumb": "thumbs/t185.jpg",
+    "src": "photos/p185.jpg?v=20261013",
+    "thumb": "thumbs/t185.jpg?v=20261013",
     "when": "2012年10月21日",
     "title": "家中合影",
     "desc": "广东深圳市南山区天地峰景园小区家中，外婆抱着二东自拍。"
   },
   {
-    "src": "photos/p186.jpg",
-    "thumb": "thumbs/t186.jpg",
+    "src": "photos/p186.jpg?v=20261013",
+    "thumb": "thumbs/t186.jpg?v=20261013",
     "when": "2012年10月21日",
     "title": "沙发嬉闹",
     "desc": "广东深圳市南山区天地峰景园小区家中，外婆和二东在沙发上嬉闹。"
