@@ -498,8 +498,8 @@ const PHOTOS = [
     "desc": "爱尔兰戈尔韦海边，宁可、卢慧和外婆在圆月下合影，卢慧轻抚着肚子。"
   },
   {
-    "src": "photos/p072.jpg",
-    "thumb": "thumbs/t072.jpg",
+    "src": "photos/p072.jpg?v=20261013",
+    "thumb": "thumbs/t072.jpg?v=20261013",
     "when": "2007年10月11日",
     "title": "喜得大东",
     "desc": "家中，外婆和卢慧抱着刚出生的大东合影，笑容满面。"
@@ -596,15 +596,15 @@ const PHOTOS = [
     "desc": "漓江游船船舱里，外婆抱着大东休息，大东若有所思地望着一旁。"
   },
   {
-    "src": "photos/p086.jpg",
-    "thumb": "thumbs/t086.jpg",
+    "src": "photos/p086.jpg?v=20261013",
+    "thumb": "thumbs/t086.jpg?v=20261013",
     "when": "2010年2月13日",
     "title": "家中团聚",
     "desc": "家中，外婆抱着襁褓中的二东，卢慧搂着大东，一家人合影，笑容满面。"
   },
   {
-    "src": "photos/p087.jpg",
-    "thumb": "thumbs/t087.jpg",
+    "src": "photos/p087.jpg?v=20261013",
+    "thumb": "thumbs/t087.jpg?v=20261013",
     "when": "2010年2月13日",
     "title": "全家合影",
     "desc": "家中，外婆抱着新生不久的二东，和宁可、大东合影，大东吃着小手。"
